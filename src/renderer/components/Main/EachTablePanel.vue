@@ -34,9 +34,9 @@
         </el-form-item>
         <el-form-item>
           <el-tabs type="border-card">
-            <el-tab-pane label="请求参数"><main-param v-bind:parameters="testRequest.parameters"></main-param></el-tab-pane>
-            <el-tab-pane label="请求头"><main-headers v-bind:headers="testRequest.headers"></main-headers></el-tab-pane>
-            <el-tab-pane label="请求体"><main-body v-on:updateHeaderType="updateType($event)" v-on:updateType="updateType($event)" v-bind:body="testRequest.body"></main-body></el-tab-pane>
+            <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
+            <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
+            <el-tab-pane label="请求体"><request-body v-on:updateHeaderType="updateType($event)" v-on:updateType="updateType($event)" v-bind:body="testRequest.body"></request-body></el-tab-pane>
             <!-- <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
           </el-tabs>
           
@@ -57,14 +57,14 @@
 </template>
 <script>
 import Sender from './Sender.js'
-import MainParam from './MainParam-2'
-import MainHeaders from './MainHeaders'
-import MainBody from './MainBody'
+import RequestParam from './RequestParam-2'
+import RequestHeaders from './RequestHeaders'
+import RequestBody from './RequestBody'
 import ResponseArea from './ResponseArea'
 export default {
   name: 'each-table-panel',
   props: ['item'],
-  components: {MainParam, MainHeaders, MainBody, ResponseArea},
+  components: {RequestParam, RequestHeaders, RequestBody, ResponseArea},
   watch: {
     testRequest: function (newR, oldR) {
       console.log('发现变化')

@@ -56,7 +56,7 @@
 </template>
 <script>
 export default {
-  name: 'main-param',
+  name: 'request-param',
   props: ['parameters'],
   data () {
     return {

@@ -56,7 +56,7 @@
 </template>
 <script>
 export default {
-  name: 'main-headers',
+  name: 'request-headers',
   props: ['headers'],
   data () {
     return {

@@ -35,7 +35,7 @@
 <script>
 import FormData from './Body/FormData'
 export default {
-  name: 'main-body',
+  name: 'request-body',
   props: ['body'],
   components: {FormData},
   data () {
