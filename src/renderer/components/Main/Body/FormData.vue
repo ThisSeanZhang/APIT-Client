@@ -4,7 +4,7 @@
     style="width: 100%">
     <el-table-column
       width="40">
-      <template slot="header">
+      <template slot="header" slot-scope="scope">
         <el-checkbox :indeterminate="indeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       </template>
       <template slot-scope="scope">
@@ -46,7 +46,7 @@
       align="right"
       width="52"
       show-overflow-tooltip>
-      <template slot="header">
+      <template slot="header" slot-scope="scope">
         <el-button icon="el-icon-plus" size="small" @click="addParam" circle></el-button>
       </template>
       <template slot-scope="scope">

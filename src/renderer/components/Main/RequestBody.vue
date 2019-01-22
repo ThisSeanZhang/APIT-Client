@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-radio-group @change="emitHeaderType" v-model="radioType">
+    <el-radio-group @change="updateBody" v-model="radioType">
       <el-radio :label='bodyType.none'>none</el-radio>
       <el-radio :label="bodyType.formData">form-data</el-radio>
       <el-radio :label="bodyType.urlencoded">urlencoded</el-radio>
@@ -9,7 +9,7 @@
         <template v-if="radioType !== bodyType.raw">
           raw
         </template>
-        <el-select @change="emitHeaderType"  v-else size="mini" v-model="selectType" placeholder="请选择">
+        <el-select @change="updateBody"  v-else size="mini" v-model="selectType" placeholder="请选择">
           <el-option
             v-for="item in bodyType.raw.value"
             :key="item.value"
@@ -40,7 +40,7 @@ import FormData from './Body/FormData'
 import RawData from './Body/RawData'
 export default {
   name: 'request-body',
-  props: ['body'],
+  props: ['value'],
   components: {FormData, RawData},
   data () {
     return {
@@ -68,9 +68,12 @@ export default {
       radioType: null,
       selectType: '',
       bodyData: {
-        currentChoice: '',
+        currentChoice: {
+          label: 'none',
+          value: ''
+        },
         formData: [],
-        rawData: 'cccc'
+        rawData: ''
       }
     }
   },
@@ -81,18 +84,22 @@ export default {
       })
       return false
     },
-    emitHeaderType () {
+    updateBody () {
       // this.$emit('updateHeaderType', this.contentTypeValue)
       this.bodyData.currentChoice = this.contentType
-      this.$emit('updateHeaderType', this.bodyData)
-      console.log(this.bodyData)
+      console.log('将要更新参数', this.bodyData)
+      this.$emit('input', this.bodyData)
     }
   },
   watch: {
     formData: function () {
-      console.log('Watch检测到fromData的更新', this.formData)
+      // console.log('Watch检测到fromData的更新', this.formData)
       // this.formData[1].key = 'modify'
-      console.log(this.bodyData)
+      // console.log(this.bodyData)
+      this.updateBody()
+    },
+    rawData: function () {
+      this.updateBody()
     }
   },
   computed: {
@@ -143,6 +150,7 @@ export default {
     }]
     let formDataStr = JSON.stringify(formData)
     this.formData = JSON.parse(formDataStr)
+    this.bodyData = this.value
   }
 }
 </script>

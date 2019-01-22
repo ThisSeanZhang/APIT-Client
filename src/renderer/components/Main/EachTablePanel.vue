@@ -36,7 +36,7 @@
           <el-tabs type="border-card">
             <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
             <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
-            <el-tab-pane label="请求体"><request-body v-on:updateHeaderType="updateType($event)" v-bind:body="testRequest.body"></request-body></el-tab-pane>
+            <el-tab-pane label="请求体"><request-body v-model="buildBody"></request-body></el-tab-pane>
             <!-- <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
           </el-tabs>
           
@@ -81,10 +81,17 @@ export default {
       httpMethod: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       testRequest: {
         method: 'GET',
-        url: 'http://localhost/file',
+        url: 'http://blog.whileaway.io/file',
         parameters: [],
         headers: [],
-        body: {}
+        body: {
+          currentChoice: {
+            label: 'none',
+            value: ''
+          },
+          formData: [],
+          rawData: ''
+        }
       },
       response: null
     }
@@ -111,10 +118,10 @@ export default {
     log (message) {
       console.log(message)
     },
-    updateType (requestBody) {
+    updateType (requestHeader) {
       // this.testRequest.body = requestBody
       // console.log(requestBody[requestBody.currentChoice.label])
-      let requestHeader = requestBody.currentChoice.value
+      // let requestHeader = requestBody.currentChoice.value
       this.testRequest.headers = this.testRequest.headers.filter(head => head.key !== 'Content-Type')
       if (requestHeader === '') {
         return null
@@ -122,18 +129,13 @@ export default {
       this.testRequest.headers.unshift({
         checked: true,
         key: 'Content-Type',
-        value: requestHeader,
+        value: requestHeader + '; charset=utf-8',
         description: ''
       })
       this.genTheIndex(this.testRequest.headers)
     },
     sendRequest () {
-      console.log(this.finalContentType)
-      Sender({
-        method: this.testRequest.method,
-        url: this.requestUrl,
-        headers: this.testRequest.headers
-      }, (xmlhttp) => {
+      Sender(this.request, (xmlhttp) => {
         this.response = xmlhttp.response
         console.log(this.response)
       })
@@ -156,8 +158,8 @@ export default {
       })
     },
     testModifyInPraents () {
-      // this.testRequest.body.formData[0].key = 'waht'
       console.log(this.testRequest.body)
+      console.log(this.requestBody)
     }
   },
   computed: {
@@ -167,20 +169,51 @@ export default {
     descriptionDivClass: function () {
       return this.descriptionIsOpen ? 'title-div-close title-div-focus' : 'title-div-close'
     },
-    finalContentType: function () {
-      let contentType = ''
-      this.testRequest.headers.forEach(perParam => {
-        contentType += perParam.value
-      })
-      return contentType === '' ? 'charset=utf-8' : contentType + '; charset=utf-8'
-    },
     requestUrl: function () {
-      if (this.testRequest.method !== 'GET') return this.testRequest.url
-
-      return this.testRequest.url + '?' + this.testRequest.parameters
-        .filter(param => param.checked === true)
+      // if (this.testRequest.method !== 'GET') return this.testRequest.url
+      let temp = this.testRequest.parameters.filter(param => param.checked === true)
+      return this.testRequest.url + (temp.length > 0 ? '?' : '') + temp
         .map(param => param.key + '=' + param.value)
         .join('&')
+    },
+    buildBody: {
+      get: function () {
+        return this.testRequest.body
+      },
+      set: function (body) {
+        this.updateType(body.currentChoice.value)
+        this.testRequest.body = body
+        console.log(this.testRequest)
+      }
+    },
+    requestBody: function () {
+      let body = {
+        'none': () => '',
+        'formData': () => {
+          let formData = new FormData()
+          this.testRequest.body.formData.forEach(param => {
+            formData.append(param.key, param.value)
+          })
+          return formData
+        },
+        'urlencoded': () => '',
+        'binary': () => '',
+        'raw': () => this.testRequest.body.rawData
+      }
+      return body[this.testRequest.body.currentChoice.label]()
+    },
+    Requestheaders: function () {
+      return this.testRequest.headers.filter(header => header.checked === true)
+    },
+    request: function () {
+      let result = {}
+      result.method = this.testRequest.method
+      result.url = this.requestUrl
+      result.headers = this.Requestheaders
+      result.data = this.testRequest.method !== 'GET'
+        ? this.requestBody
+        : null
+      return result
     }
   },
   created () {
