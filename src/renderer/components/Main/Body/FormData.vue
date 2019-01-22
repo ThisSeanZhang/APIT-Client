@@ -4,7 +4,7 @@
     style="width: 100%">
     <el-table-column
       width="40">
-      <template slot="header" slot-scope="scope">
+      <template slot="header">
         <el-checkbox :indeterminate="indeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       </template>
       <template slot-scope="scope">
@@ -29,7 +29,7 @@
         v-model="scope.row.value"
         clearable>
         </el-input>
-        <template v-else><input @change="fileBlur" type="file"></template>
+        <template v-else><input v-bind:data-index="scope.row.index" @change="fileBlur" type="file"></template>
       </template>
     </el-table-column>
     <el-table-column
@@ -46,7 +46,7 @@
       align="right"
       width="52"
       show-overflow-tooltip>
-      <template slot="header" slot-scope="scope">
+      <template slot="header">
         <el-button icon="el-icon-plus" size="small" @click="addParam" circle></el-button>
       </template>
       <template slot-scope="scope">
@@ -83,10 +83,10 @@ export default {
     addParam () {
       this.formData.push({
         checked: true,
-        key: '2016-05-03',
+        key: 'username',
         type: 'Text',
         value: '王小虎',
-        description: '上海市普陀区金沙江路',
+        description: '名称',
         index: this.formData.length.toString()
       })
     },
@@ -100,9 +100,16 @@ export default {
       })
     },
     fileBlur (param) {
-      console.log('Blur File Target')
-      console.log('this param', param)
-      console.log('file', param.target.files)
+      // console.log('Blur File Target')
+      // console.log('this param', param)
+      // console.log('target', param.target)
+      // console.log('files', param.target.files)
+      // console.log('data', param.target.dataset.index)
+      // console.log('变更后的formData', this.formData)
+      let changeFile = this.formData[param.target.dataset.index]
+      changeFile.value = param.target.files.length !== 0 ? param.target.files[0] : ''
+      this.formData.splice(param.target.dataset.index, 1, changeFile)
+      // console.log('Blur File Target End!')
     }
   },
   created () {

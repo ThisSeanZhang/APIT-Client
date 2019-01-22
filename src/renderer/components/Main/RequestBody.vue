@@ -24,7 +24,10 @@
 
     </template>
     <template v-else-if="radioType === bodyType.formData">
-      <form-data v-bind:formData="formData"></form-data>
+      <form-data v-bind:formData="formData" ></form-data>
+    </template>
+    <template v-else-if="radioType === bodyType.raw">
+      <raw-data v-model="rawData" ></raw-data>
     </template>
     <!-- <br>
     {{radioType}}
@@ -34,10 +37,11 @@
 </template>
 <script>
 import FormData from './Body/FormData'
+import RawData from './Body/RawData'
 export default {
   name: 'request-body',
   props: ['body'],
-  components: {FormData},
+  components: {FormData, RawData},
   data () {
     return {
       bodyType: {
@@ -63,7 +67,11 @@ export default {
       },
       radioType: null,
       selectType: '',
-      formData: null
+      bodyData: {
+        currentChoice: '',
+        formData: [],
+        rawData: 'cccc'
+      }
     }
   },
   methods: {
@@ -74,30 +82,64 @@ export default {
       return false
     },
     emitHeaderType () {
-      this.$emit('updateHeaderType', this.type)
+      // this.$emit('updateHeaderType', this.contentTypeValue)
+      this.bodyData.currentChoice = this.contentType
+      this.$emit('updateHeaderType', this.bodyData)
+      console.log(this.bodyData)
+    }
+  },
+  watch: {
+    formData: function () {
+      console.log('Watch检测到fromData的更新', this.formData)
+      // this.formData[1].key = 'modify'
+      console.log(this.bodyData)
     }
   },
   computed: {
-    type: function () {
+    contentType: function () {
+      return this.radioType !== this.bodyType.raw
+        ? this.radioType
+        : {
+          label: this.bodyType.raw.label,
+          value: this.selectType
+        }
+    },
+    contentTypeValue: function () {
       let choiceType = this.radioType !== this.bodyType.raw ? this.radioType.value : this.selectType
-      // this.$emit('updateType', choiceType)
       return choiceType
+    },
+    formData: {
+      get: function () {
+        return this.bodyData.formData
+      },
+      set: function (newvalue) {
+        this.bodyData.formData = newvalue
+      }
+    },
+    rawData: {
+      get: function () {
+        return this.bodyData.rawData
+      },
+      set: function (newvalue) {
+        console.log(newvalue)
+        this.bodyData.rawData = newvalue
+      }
     }
   },
   created () {
     this.radioType = this.bodyType.none
     let formData = [{
       checked: true,
-      key: 'Content-Type',
+      key: 'filename',
       type: 'File',
-      value: 'application/json',
-      description: 'Json方式'
+      value: null,
+      description: '头像文件'
     }, {
       checked: true,
-      key: 'test',
+      key: 'userId',
       type: 'Text',
-      value: 'test',
-      description: 'test'
+      value: 'Sean',
+      description: '用户名'
     }]
     let formDataStr = JSON.stringify(formData)
     this.formData = JSON.parse(formDataStr)

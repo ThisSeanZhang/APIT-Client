@@ -36,7 +36,7 @@
           <el-tabs type="border-card">
             <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
             <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
-            <el-tab-pane label="请求体"><request-body v-on:updateHeaderType="updateType($event)" v-on:updateType="updateType($event)" v-bind:body="testRequest.body"></request-body></el-tab-pane>
+            <el-tab-pane label="请求体"><request-body v-on:updateHeaderType="updateType($event)" v-bind:body="testRequest.body"></request-body></el-tab-pane>
             <!-- <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
           </el-tabs>
           
@@ -47,7 +47,7 @@
 
 
     <el-button-group slot="append" >
-          <el-button type="primary" icon="el-icon-edit"></el-button>
+          <el-button type="primary" @click="testModifyInPraents" icon="el-icon-edit"></el-button>
           <el-button type="primary" icon="el-icon-share"></el-button>
         </el-button-group>
     <div>{{item.content}}</div>
@@ -84,7 +84,7 @@ export default {
         url: 'http://localhost/file',
         parameters: [],
         headers: [],
-        body: []
+        body: {}
       },
       response: null
     }
@@ -111,15 +111,18 @@ export default {
     log (message) {
       console.log(message)
     },
-    updateType (param) {
+    updateType (requestBody) {
+      // this.testRequest.body = requestBody
+      // console.log(requestBody[requestBody.currentChoice.label])
+      let requestHeader = requestBody.currentChoice.value
       this.testRequest.headers = this.testRequest.headers.filter(head => head.key !== 'Content-Type')
-      if (param === '') {
+      if (requestHeader === '') {
         return null
       }
       this.testRequest.headers.unshift({
         checked: true,
         key: 'Content-Type',
-        value: param,
+        value: requestHeader,
         description: ''
       })
       this.genTheIndex(this.testRequest.headers)
@@ -151,6 +154,10 @@ export default {
       list.forEach((param, index) => {
         param.index = index.toString()
       })
+    },
+    testModifyInPraents () {
+      // this.testRequest.body.formData[0].key = 'waht'
+      console.log(this.testRequest.body)
     }
   },
   computed: {
