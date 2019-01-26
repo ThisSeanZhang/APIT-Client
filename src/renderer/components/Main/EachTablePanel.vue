@@ -18,13 +18,13 @@
         :rows="4"
         resize="none"
         placeholder="请输入描述"
-        v-model="textarea">
+        v-model="testRequest.bewrite">
       </el-input>
     </div>
     <div style="margin-top: 10px;">
       <el-form >
         <el-form-item>
-          <el-input placeholder="请输入内容" v-model="testRequest.url" class="input-with-select">
+          <el-input placeholder="请输入内容" v-model="testRequest.url" @blur="checkeUrlStartWithHTTP" class="input-with-select">
             <el-select v-model="testRequest.method" slot="prepend" placeholder="请选择">
               <el-option v-for="method in httpMethod" :key="method" :label="method" :value="method"></el-option>
             </el-select>
@@ -47,7 +47,7 @@
 
 
     <el-button-group slot="append" >
-          <el-button type="primary" @click="testModifyInPraents" icon="el-icon-edit"></el-button>
+          <el-button type="primary" @click="checkeUrlStartWithHTTP" icon="el-icon-edit"></el-button>
           <el-button type="primary" icon="el-icon-share"></el-button>
         </el-button-group>
     <div>{{item.content}}</div>
@@ -77,11 +77,11 @@ export default {
       inputVisible: false,
       inputValue: null,
       descriptionIsOpen: false,
-      textarea: 'asdadasdadjaikhjfakhfahskjfhak',
       httpMethod: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       testRequest: {
         method: 'GET',
-        url: 'http://blog.whileaway.io/file',
+        bewrite: '',
+        url: 'http://blog.whileaway.io',
         parameters: [],
         headers: [],
         body: {
@@ -160,6 +160,11 @@ export default {
     testModifyInPraents () {
       console.log(this.testRequest.body)
       console.log(this.requestBody)
+    },
+    checkeUrlStartWithHTTP () {
+      let http = /^http:\/\//i
+      this.testRequest.url = this.testRequest.url.trim()
+      this.testRequest.url = this.testRequest.url.search(http) !== -1 ? this.testRequest.url : 'http://' + this.testRequest.url
     }
   },
   computed: {
