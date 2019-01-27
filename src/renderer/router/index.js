@@ -7,13 +7,18 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'account',
+      component: require('@/components/Account/Index').default
+    },
+    {
+      path: '/demo',
       name: 'landing-page',
       component: require('@/components/LandingPage').default
     },
     {
       path: '/index',
       name: 'index',
-      component: require('@/components/Index').default
+      component: require('@/components/Panel/Index').default
     },
     {
       path: '/test',
