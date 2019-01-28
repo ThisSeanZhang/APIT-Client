@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-form label-position="top" ref="form"  label-width="80px">
-      <el-form-item>
-        <el-input v-model="loginform.username" placeholder="账号"></el-input>
+    <el-form :model="loginform" label-position="top" :rules="rules" ref="loginForm"  label-width="80px">
+      <el-form-item prop="developerName" >
+        <el-input v-model="loginform.developerName" @focus="clearLogError" placeholder="昵称"></el-input>
+      </el-form-item>
+      <el-form-item prop="developerPass" >
+        <el-input v-model="loginform.developerPass" @focus="clearLogError" placeholder="密码" type="password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="loginform.password" placeholder="密码" type="password"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="loginform.password" placeholder="密码" type="password"></el-input>
+        记住我 &nbsp;&nbsp;&nbsp;<el-switch v-model="loginform.remeberme"></el-switch>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="userlogin">登录</el-button>
@@ -23,22 +23,45 @@ export default {
   name: 'register',
   props: ['value'],
   data () {
+    var chepass = (rule, value, callback) => {
+      if (!this.loginPass) {
+        callback(new Error('用户名或密码错误'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginform: {
-        username: '',
-        password: ''
+        developerName: '',
+        developerPass: '',
+        remeberme: false
+      },
+      loginPass: true,
+      rules: {
+        developerName: [
+          { required: true, message: '请输入昵称', trigger: 'blur' },
+          { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' },
+          {validator: chepass}
+        ],
+        developerPass: [
+          { required: true, message: '请选择活动区域', trigger: 'blur' },
+          {validator: chepass}
+        ]
       }
     }
   },
   methods: {
     userlogin () {
-      if (!(this.loginform.username && this.loginform.password)) {
-        alert('请输入没有输入账号或者密码')
-      }
       // apis.LOGIN(this.loginform).then(res => {
       //   console.log(res);
       //   this.$router.push("home");
       // });
+      this.loginPass = false
+      this.$refs['loginForm'].validateField(['developerName', 'developerPass'])
+    },
+    clearLogError () {
+      this.loginPass = true
+      this.$refs['loginForm'].validateField(['developerName', 'developerPass'])
     }
   }
 }

@@ -5,14 +5,13 @@
       <el-main>
         <div class="form_box">
           <div class="from_head">
-            <div @click="changePanel" :class="{ active: readyLogin }">登录</div>
-            <div @click="changePanel" :class="{ active: !readyLogin }">  注册</div>
+            <div @click="changePanel('login')" :class="{ active: readyLogin }">登录</div>
+            <div @click="changePanel('register')" :class="{ active: !readyLogin }">  注册</div>
           </div> 
           <transition name="fade" >
-            <developer-register class="input_box" v-if="readyLogin"></developer-register>
-            <developer-sign-in class="input_box" v-else></developer-sign-in>
+            <developer-sign-in class="input_box" v-if="readyLogin" ></developer-sign-in>
+            <developer-register class="input_box" v-else ></developer-register>
           </transition>
-          
         </div>
       </el-main>
     </el-container>
@@ -30,8 +29,8 @@ export default {
     }
   },
   methods: {
-    changePanel () {
-      this.readyLogin = !this.readyLogin
+    changePanel (target) {
+      this.readyLogin = target === 'login'
     }
   }
 }
@@ -53,24 +52,29 @@ export default {
   .el-main {
     background-color: #ffffff;
     color: #333;
-    text-align: center;
-    line-height: 160px;
-    align-items: center;
-    display: flex;
+    // line-height: 160px;
+    // align-items: center;
+    // display: flex;
+    position: relative;
   }
   .el-container {
     height: 100%;
   }
   
   .form_box{
-    margin: 0 auto;
     width: 400px;
     height: 400px;
     padding: 20px 10px;
     border: 1px solid rgba(76, 107, 107, 0.19);
     box-shadow: 10px 10px 2px #f0f0f0;
     border-radius: 5px;
-    position: relative;
+
+    position: absolute;
+    bottom: 0px;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    margin: auto;
     .from_head {
       height: 40px;
       line-height: 40px;
@@ -80,6 +84,7 @@ export default {
       margin-bottom: 20px;
       width: 100%;
       margin: 0 auto;
+      text-align: center;
       div:first-child {
         flex: 1;
       }
@@ -94,12 +99,22 @@ export default {
   .input_box{
     position:absolute;
     width: 96%;
+    text-align: right;
   }
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
+    // transition: opacity .5s;
+    transition: all .3s ease;
   }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  // .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  //   opacity: 0;
+  // }
+  .fade-enter, /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateX(-400px);
     opacity: 0;
   }
+  .fade-leave-to{
+    transform: translateX(400px);
+    opacity: 0;
+   }
 </style>
 

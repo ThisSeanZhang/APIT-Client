@@ -1,14 +1,20 @@
 <template>
   <div>
-    <el-form label-position="top" ref="form"  label-width="80px">
-      <el-form-item>
-        <el-input v-model="loginform.username" placeholder="账号"></el-input>
+    <el-form :model="registerForm" label-position="top" ref="register_form" :rules="rules"  label-width="80px">
+      <el-form-item prop="developerName">
+        <el-input v-model="registerForm.developerName" @focus="clearLogError" placeholder="昵称"></el-input>
+      </el-form-item>
+      <el-form-item prop="email">
+        <el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
+      </el-form-item>
+      <el-form-item prop="developerPass">
+        <el-input v-model="registerForm.developerPass" placeholder="密码" type="password"></el-input>
+      </el-form-item>
+      <el-form-item prop="confirmPass">
+        <el-input v-model="registerForm.confirmPass" placeholder="确认密码" type="password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="loginform.password" placeholder="密码" type="password"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="userlogin">登录</el-button>
+        <el-button type="primary" @click="developerRegister">注册</el-button>
       </el-form-item>
     </el-form>
     <!-- <div class="forget"><span>忘记密码</span> </div> -->
@@ -16,26 +22,105 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'register',
   props: ['value'],
   data () {
+    var developerNameValidator = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入昵称'))
+      } else if (this.developerNameExist) {
+        callback(new Error('昵称已存在'))
+      } else {
+        callback()
+      }
+    }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.registerForm.confirmPass !== '') {
+          this.$refs.register_form.validateField('confirmPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.developerPass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      loginform: {
-        username: '',
-        password: ''
+      registerForm: {
+        developerName: '',
+        email: '',
+        confirmPass: '',
+        developerPass: ''
+      },
+      developerNameExist: false,
+      rules: {
+        developerName: [
+          { required: true, message: '请输入昵称', trigger: 'blur' },
+          { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' },
+          {validator: developerNameValidator}
+        ],
+        developerPass: [
+          {validator: validatePass, trigger: 'blur'}
+        ],
+        confirmPass: [
+          {validator: validatePass2, trigger: 'blur'}
+        ],
+        email: [
+          { type: 'email', required: true, message: '邮箱格式不正确', trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
-    userlogin () {
-      if (!(this.loginform.username && this.loginform.password)) {
-        alert('请输入没有输入账号或者密码')
-      }
+    developerRegister () {
+      // this.developerNameExist = true
+      this.$refs.register_form.validate(isAllPass => {
+        if (isAllPass) {
+          this.checkNameExist().then(resp => {
+            console.log(resp)
+            this.developerNameExist = true
+            this.$refs.register_form.validateField('developerName')
+          }).catch(error => {
+            console.log(error.response)
+            if (error.response.status === 404) {
+              this.sendRegisterInfo()
+            }
+          })
+        }
+      })
       // apis.LOGIN(this.loginform).then(res => {
       //   console.log(res);
       //   this.$router.push("home");
       // });
+    },
+    clearLogError () {
+      this.developerNameExist = false
+      this.$refs.register_form.validateField('developerName')
+    },
+    checkNameExist () {
+      return axios({
+        method: 'get',
+        url: 'http://localhost:8080/developers/developer-name/' + this.registerForm.developerName
+      })
+    },
+    sendRegisterInfo () {
+      axios({
+        method: 'POST',
+        url: 'http://localhost:8080/developers',
+        data: this.registerForm
+      }).then(resp => {
+        console.log(resp)
+      })
     }
   }
 }
