@@ -44,7 +44,7 @@ export default {
           {validator: chepass}
         ],
         developerPass: [
-          { required: true, message: '请选择活动区域', trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'blur' },
           {validator: chepass}
         ]
       }

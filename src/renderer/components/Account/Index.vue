@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>Header</el-header>
+    <el-header  ><p @click="changeToPanel">Header</p></el-header>
     <el-container>
       <el-main>
         <div class="form_box">
@@ -31,6 +31,9 @@ export default {
   methods: {
     changePanel (target) {
       this.readyLogin = target === 'login'
+    },
+    changeToPanel () {
+      this.$router.push('index')
     }
   }
 }
@@ -56,6 +59,7 @@ export default {
     // align-items: center;
     // display: flex;
     position: relative;
+    overflow: hidden;
   }
   .el-container {
     height: 100%;
@@ -86,9 +90,11 @@ export default {
       margin: 0 auto;
       text-align: center;
       div:first-child {
+        cursor: pointer;
         flex: 1;
       }
       div:last-child{
+        cursor: pointer;
         flex: 1;
       }
     }
