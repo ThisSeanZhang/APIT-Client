@@ -22,7 +22,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import {ajax} from '../../api/fetch'
+import { Loading } from 'element-ui'
 export default {
   name: 'register',
   props: ['value'],
@@ -70,9 +72,13 @@ export default {
           {validator: developerNameValidator}
         ],
         developerPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { message: '长度在1到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9=]{6,16}$/, trigger: 'blur' },
           {validator: validatePass, trigger: 'blur'}
         ],
         confirmPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { message: '长度在1到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9]{6,16}$/, trigger: 'blur' },
           {validator: validatePass2, trigger: 'blur'}
         ],
         email: [
@@ -86,41 +92,55 @@ export default {
       // this.developerNameExist = true
       this.$refs.register_form.validate(isAllPass => {
         if (isAllPass) {
-          this.checkNameExist().then(resp => {
+          let loding = Loading.service({
+            lock: true,
+            text: 'Loading',
+            background: 'rgba(255, 255, 255, 0.6)'
+          })
+          let request = {method: 'GET', url: 'http://localhost:8080/developers/developer-name/' + this.registerForm.developerName}
+          ajax(request).then(resp => {
             console.log(resp)
             this.developerNameExist = true
             this.$refs.register_form.validateField('developerName')
+            this.$message('当前用户名已存在(●ˇ∀ˇ●)')
+            loding.close()
           }).catch(error => {
-            console.log(error.response)
-            if (error.response.status === 404) {
-              this.sendRegisterInfo()
-            }
+            this.whenErrorMessage(error, this.sendRegisterInfo, true)
+            loding.close()
           })
         }
       })
-      // apis.LOGIN(this.loginform).then(res => {
-      //   console.log(res);
-      //   this.$router.push("home");
-      // });
     },
     clearLogError () {
       this.developerNameExist = false
       this.$refs.register_form.validateField('developerName')
     },
-    checkNameExist () {
-      return axios({
-        method: 'get',
-        url: 'http://localhost:8080/developers/developer-name/' + this.registerForm.developerName
+    sendRegisterInfo () {
+      let request = {method: 'POST', url: 'http://localhost:8080/developers', data: this.registerForm}
+      return ajax(request).then(resp => {
+        console.log(resp)
+        this.$message({type: 'success', message: '注册成功[]~(￣▽￣)~*'})
+        this.$emit('input', true)
+      }).catch(error => {
+        this.whenErrorMessage(error, () => {})
       })
     },
-    sendRegisterInfo () {
-      axios({
-        method: 'POST',
-        url: 'http://localhost:8080/developers',
-        data: this.registerForm
-      }).then(resp => {
-        console.log(resp)
-      })
+    whenErrorMessage (error, dowhat, isSlience = false) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          dowhat()
+        }
+        if (!isSlience) {
+          this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
+        }
+      } else if (error.request) {
+        // console.log(error.request)
+        this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
+      } else {
+        // console.log('Error', error.message)
+        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
+      }
+      // console.log(error.config)
     }
   }
 }

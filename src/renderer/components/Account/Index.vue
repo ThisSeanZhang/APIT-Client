@@ -5,12 +5,12 @@
       <el-main>
         <div class="form_box">
           <div class="from_head">
-            <div @click="changePanel('login')" :class="{ active: readyLogin }">登录</div>
+            <div @click="changePanel('login')" :class="{ active: readyLogin }">登入</div>
             <div @click="changePanel('register')" :class="{ active: !readyLogin }">  注册</div>
-          </div> 
+          </div>
           <transition name="fade" >
             <developer-sign-in class="input_box" v-if="readyLogin" ></developer-sign-in>
-            <developer-register class="input_box" v-else ></developer-register>
+            <developer-register class="input_box" v-else v-model="readyLogin" ></developer-register>
           </transition>
         </div>
       </el-main>
