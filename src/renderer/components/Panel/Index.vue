@@ -20,7 +20,7 @@
 </template>
 <script>
 import WaHeader from './Header/WaHeader'
-import WaAside from './Aside/WaAside'
+import WaAside from './Aside/WaAside1'
 import MainTable from './Main/MainTable'
 export default {
   name: 'index',
@@ -78,7 +78,7 @@ export default {
   }
   
   .el-aside {
-    background-color: #D3DCE6;
+    /* background-color: #D3DCE6; */
     color: #333;
     height: 100%;
     width: auto !important;
