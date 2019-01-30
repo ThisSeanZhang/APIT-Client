@@ -6,7 +6,7 @@
       <span class="edit"  >
         <i @click.stop="editProject" class="el-icon-edit-outline"></i></span>
     </div>
-    <div :class="projectBodyClass">
+    <div>
       <el-tree 
       v-if="projectIsOpen"
       lazy 
@@ -32,7 +32,6 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
-      descriptionIsOpen: false,
       projectIsOpen: false,
       filterText: ''
     }
@@ -43,7 +42,6 @@ export default {
     },
     openTheProject () {
       this.projectIsOpen = !this.projectIsOpen
-      this.descriptionIsOpen = !this.descriptionIsOpen
     },
     loadFolders (node, resolve) {
       console.log(node)
@@ -99,13 +97,10 @@ export default {
   },
   computed: {
     iconClass: function () {
-      return this.descriptionIsOpen ? 'el-icon-arrow-down' : 'el-icon-arrow-right'
+      return this.projectIsOpen ? 'el-icon-arrow-down' : 'el-icon-arrow-right'
     },
     projectClass: function () {
       return this.projectIsOpen ? 'wa_project_focus wa_project' : 'wa_project_close wa_project'
-    },
-    projectBodyClass: function () {
-      return this.projectIsOpen ? 'project_body project_body_open' : 'project_body'
     }
   },
   created () {

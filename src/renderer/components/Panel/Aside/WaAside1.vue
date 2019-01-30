@@ -1,7 +1,14 @@
 <template>
   <div class="aside">
-    <div class="projects">
-      <div class="projects_is_empty" v-if="projectsIsEmpty">空空的哦还没有项目,<el-button type="text">创建</el-button>一个吧</div>
+    <div v-loading="obtionStatus === requestStatus.FETCHING" class="projects">
+      <div class="projects_is_empty" v-if="projectsIsEmpty">
+        <div v-if="obtionStatus === requestStatus.NOTFOUND">
+          空空的诶(●ˇ∀ˇ●),<el-button @click.stop="findAllProjectByDeveloperId" type="text">创建</el-button>一个吧
+        </div>
+        <div v-else-if="obtionStatus === requestStatus.REQUEST_ERROR">
+          请求失败了_(:з)∠)_,<el-button @click.stop="findAllProjectByDeveloperId" type="text">再试试</el-button>吧
+        </div>
+      </div>
       <wa-project v-else v-for="project in projects" :key="project.pid" v-bind:project="project"></wa-project>
     </div>
     <div class="dividing_line"></div>
@@ -16,20 +23,24 @@ export default {
   components: {WaProject},
   data () {
     return {
-      descriptionIsOpen: false,
-      projects: []
+      projects: [],
+      requestStatus: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
+      obtionStatus: null
     }
   },
   methods: {
-    findAllProjectByDeveloperId (developerId) {
+    findAllProjectByDeveloperId () {
       let request = {method: 'GET', url: 'http://localhost:8080/projects/owner/' + this.$root.$data.userInfo.developerId}
+      this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {
         console.log(resp)
         // TODO 登入成功后的相应操作
         this.projects = resp.data.data
+        this.obtionStatus = this.requestStatus.SUCCESS
       }).catch(error => {
         this.whenErrorMessage(error, () => {
           this.$message.warning('还没有项目欸(●ˇ∀ˇ●)')
+          this.obtionStatus = this.requestStatus.NOTFOUND
         })
       })
     },
@@ -40,8 +51,10 @@ export default {
         }
       } else if (error.request) {
         this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
+        this.obtionStatus = this.requestStatus.REQUEST_ERROR
       } else {
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
+        this.obtionStatus = this.requestStatus.REQUEST_ERROR
       }
     }
   },
@@ -52,6 +65,7 @@ export default {
     }
   },
   created () {
+    this.obtionStatus = this.requestStatus.FETCHING
     this.findAllProjectByDeveloperId()
     // this.projects = [{
     //   pid: 1,
@@ -75,7 +89,7 @@ export default {
   height: 100%;
   display: flex;
   overflow: hidden;
-  padding: 0px 8px;
+  padding: 0px 0px 0px 8px;
   .dividing_line{
     height: 100%;
     // width: 0px;
