@@ -66,6 +66,9 @@ export default {
             console.log(resp)
             // TODO 登入成功后的相应操作
             this.$message('登入成功o(￣▽￣)ｄ')
+            // 临时存储
+            this.$root.$data.userInfo = resp.data.data
+            console.log(this.$root)
             loding.close()
           }).catch(error => {
             this.whenErrorMessage(error, () => {
