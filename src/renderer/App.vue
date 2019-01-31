@@ -6,12 +6,7 @@
 
 <script>
   export default {
-    name: 'api',
-    data () {
-      return {
-        userInfo: null
-      }
-    }
+    name: 'api'
   }
 </script>
 

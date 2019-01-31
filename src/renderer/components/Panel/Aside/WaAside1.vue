@@ -18,6 +18,9 @@
 import WaProject from './WaProject'
 import {ajax} from '../../../api/fetch'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('UserInfo')
+
 export default {
   name: 'wa-aside1',
   components: {WaProject},
@@ -30,7 +33,7 @@ export default {
   },
   methods: {
     findAllProjectByDeveloperId () {
-      let request = {method: 'GET', url: 'http://localhost:8080/projects/owner/' + this.$root.$data.userInfo.developerId}
+      let request = {method: 'GET', url: 'http://localhost:8080/projects/owner/' + this.developerId}
       this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {
         console.log(resp)
@@ -62,7 +65,8 @@ export default {
     projectsIsEmpty: function () {
       console.log(this.projects || this.projects.length === 0)
       return this.projects === null || this.projects.length === 0
-    }
+    },
+    ...mapState(['developerId'])
   },
   created () {
     this.obtionStatus = this.requestStatus.FETCHING

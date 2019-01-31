@@ -32,6 +32,7 @@ export default {
         label: 'label',
         isLeaf: 'leaf'
       },
+      requestUrl: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
       projectIsOpen: false,
       filterText: ''
     }

@@ -21,6 +21,10 @@
 <script>
 import {ajax} from '../../api/fetch'
 import { Loading } from 'element-ui'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('UserInfo')
+
 export default {
   name: 'register',
   props: ['value'],
@@ -66,9 +70,8 @@ export default {
             console.log(resp)
             // TODO 登入成功后的相应操作
             this.$message('登入成功o(￣▽￣)ｄ')
-            // 临时存储
-            this.$root.$data.userInfo = resp.data.data
-            console.log(this.$root)
+            this.setUserInfo(resp.data.data)
+            console.log(this.developerId)
             loding.close()
           }).catch(error => {
             this.whenErrorMessage(error, () => {
@@ -94,11 +97,15 @@ export default {
         // console.log(error.request)
         this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
       } else {
-        // console.log('Error', error.message)
+        console.log('Error', error.message)
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
       }
       // console.log(error.config)
-    }
+    },
+    ...mapActions(['setUserInfo'])
+  },
+  computed: {
+    ...mapState(['developerId'])
   }
 }
 </script>

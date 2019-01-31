@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, session } from 'electron'
+// import '../renderer/store'
 
 /**
  * Set `__static` path to static files in production
