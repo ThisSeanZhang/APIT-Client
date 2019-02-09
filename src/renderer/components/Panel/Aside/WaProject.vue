@@ -46,34 +46,44 @@ export default {
     },
     loadFolders (node, resolve) {
       console.log(node)
+      console.log(this.project)
       if (node.level === 0) {
-        return resolve([{
-          label: '一级 1',
-          nid: 1,
-          leaf: true
-        }, {
-          label: '一级 1',
-          nid: 2,
-          leaf: false
-        }])
-      }
-      if (node.data.nid === 2) {
-        resolve([{
-          label: '二级 1',
-          nid: 3,
-          leaf: false
-        }])
+        let request = {
+          method: 'GET',
+          url: 'http://localhost:8080/projects/content/first-layer',
+          data: {
+            belongProject: this.project.pid,
+            folderOwnerId: this.project.projectOwner
+          }}
+        this.getFolders(node, resolve, request)
       } else {
-        this.getFolders(node, resolve)
+        let request = {
+          method: 'GET',
+          url: 'http://localhost:8080/folders/content',
+          data: {
+            belongProject: this.project.pid,
+            folderOwnerId: this.project.projectOwner,
+            parentId: node.data.nid
+          }}
+        this.getFolders(node, resolve, request)
       }
+      // if (node.data.nid === 2) {
+      //   resolve([{
+      //     label: '二级 1',
+      //     nid: 3,
+      //     leaf: false
+      //   }])
+      // } else {
+      //   this.getFolders(node, resolve)
+      // }
       console.log(this.data)
     },
-    getFolders (node, container) {
-      let request = {method: 'GET', url: 'http://localhost:8080/floders'}
+    getFolders (node, container, request) {
+      // let request = {method: 'GET', url: 'http://localhost:8080/floders'}
       ajax(request).then(resp => {
         console.log(resp)
         // TODO 登入成功后的相应操作
-        container(resp.data)
+        container(resp.data.data)
       }).catch(error => {
         this.whenErrorMessage(error, () => {
           this.$message.warning('没有东西欸(●ˇ∀ˇ●)')
