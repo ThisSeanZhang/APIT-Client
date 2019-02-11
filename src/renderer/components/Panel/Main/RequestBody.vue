@@ -78,17 +78,16 @@ export default {
     }
   },
   methods: {
-    IsRawType (obj) {
-      this.bodyType.raw.value.forEach(raw => {
-        if (obj === raw.label) return true
-      })
-      return false
-    },
     updateBody () {
       // this.$emit('updateHeaderType', this.contentTypeValue)
       this.bodyData.currentChoice = this.contentType
       console.log('将要更新参数', this.bodyData)
       this.$emit('input', this.bodyData)
+    },
+    isRawValue (value) {
+      return this.bodyType.raw.value
+        .map(type => type.value)
+        .filter(v => value === v).length > 0
     }
   },
   watch: {
@@ -134,23 +133,27 @@ export default {
     }
   },
   created () {
-    this.radioType = this.bodyType.none
-    let formData = [{
-      checked: true,
-      key: 'filename',
-      type: 'File',
-      value: null,
-      description: '头像文件'
-    }, {
-      checked: true,
-      key: 'userId',
-      type: 'Text',
-      value: 'Sean',
-      description: '用户名'
-    }]
-    let formDataStr = JSON.stringify(formData)
-    this.formData = JSON.parse(formDataStr)
+    // let formData = [{
+    //   checked: true,
+    //   key: 'filename',
+    //   type: 'File',
+    //   value: null,
+    //   description: '头像文件'
+    // }, {
+    //   checked: true,
+    //   key: 'userId',
+    //   type: 'Text',
+    //   value: 'Sean',
+    //   description: '用户名'
+    // }]
+    // let formDataStr = JSON.stringify(formData)
+    // this.formData = JSON.parse(formDataStr)
+    // this.radioType = this.bodyType.none
     this.bodyData = this.value
+    this.radioType = this.bodyType[this.bodyData.currentChoice.label]
+    this.selectType = this.isRawValue(this.bodyData.currentChoice.value)
+      ? this.bodyData.currentChoice.value
+      : ''
   }
 }
 </script>

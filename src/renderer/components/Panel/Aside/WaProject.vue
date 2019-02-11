@@ -39,6 +39,22 @@ export default {
   },
   methods: {
     handleNodeClick (data) {
+      if (data.leaf) {
+        let request = {
+          method: 'GET',
+          url: 'http://localhost:8080/apis/' + data.nid
+        }
+        ajax(request).then(resp => {
+          // TODO 获取成功后的相应操作
+          console.log(resp.data)
+          resp.data.data.aid = resp.data.data.aid.toString()
+          this.$emit('get:api', resp.data)
+        }).catch(error => {
+          this.whenErrorMessage(error, () => {
+            this.$message.warning('没有东西欸(●ˇ∀ˇ●)')
+          })
+        })
+      }
       console.log(data)
     },
     openTheProject () {

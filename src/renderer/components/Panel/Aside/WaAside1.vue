@@ -9,7 +9,7 @@
           请求失败了_(:з)∠)_,<el-button @click.stop="findAllProjectByDeveloperId" type="text">再试试</el-button>吧
         </div>
       </div>
-      <wa-project v-else v-for="project in projects" :key="project.pid" v-bind:project="project"></wa-project>
+      <wa-project v-on:get:api="$emit('pushToTable', $event.data)" v-else v-for="project in projects" :key="project.pid" v-bind:project="project"></wa-project>
     </div>
     <div class="dividing_line"></div>
   </div>
@@ -59,6 +59,9 @@ export default {
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
         this.obtionStatus = this.requestStatus.REQUEST_ERROR
       }
+    },
+    pushAPIinfoToTables (param) {
+      console.log('得到的api参数', param)
     }
   },
   computed: {

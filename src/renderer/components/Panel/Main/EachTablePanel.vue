@@ -4,13 +4,13 @@
     <el-input
       class="input-new-tag"
       v-if="inputVisible"
-      v-model="item.title"
+      v-model="testRequest.apiName"
       ref="saveTagInput"
       size="small"
       @keyup.enter.native="handleInputConfirm"
       @blur="handleInputConfirm"
     ></el-input>
-    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{item.title}}</el-button>
+    <el-button v-else class="button-new-tag" size="small" @click="showInput">{{testRequest.apiName}}</el-button>
     <el-button class="button-save" type="primary" size="small" @click="log('baocun')" icon="el-icon-document">保存</el-button>
     <div :class="descriptionDivClass" >
       <el-input
@@ -66,10 +66,11 @@ export default {
   props: ['item'],
   components: {RequestParam, RequestHeaders, RequestBody, ResponseArea},
   watch: {
-    testRequest: function (newR, oldR) {
-      console.log('发现变化')
-      console.log(newR.parameters)
-      console.log(oldR.parameters)
+    testRequest: {
+      handler: function (val, oldVal) {
+        console.log('testRequest深度检查', val, oldVal)
+      },
+      deep: false
     }
   },
   data () {
@@ -79,6 +80,8 @@ export default {
       descriptionIsOpen: false,
       httpMethod: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       testRequest: {
+        aid: null,
+        apiName: '',
         method: 'GET',
         bewrite: '',
         url: 'http://blog.whileaway.io',
@@ -133,6 +136,8 @@ export default {
         description: ''
       })
       this.genTheIndex(this.testRequest.headers)
+      // console.log(JSON.stringify(this.testRequest.headers))
+      // console.log(JSON.stringify(this.testRequest.body))
     },
     sendRequest () {
       Sender(this.request, (xmlhttp) => {
@@ -165,6 +170,35 @@ export default {
       let http = /^http:\/\//i
       this.testRequest.url = this.testRequest.url.trim()
       this.testRequest.url = this.testRequest.url.search(http) !== -1 ? this.testRequest.url : 'http://' + this.testRequest.url
+    },
+    convertToTestRequest (item) {
+      this.testRequest.aid = item.aid
+      this.testRequest.apiName = item.apiName
+      this.testRequest.method = item.method ? item.method : 'GET'
+      this.testRequest.bewrite = item.bewrite ? item.bewrite : ''
+      this.testRequest.url = item.url ? item.url : ''
+      this.testRequest.parameters = item.parameters ? JSON.parse(item.parameters) : []
+      this.testRequest.headers = item.headers ? JSON.parse(item.headers) : []
+      const body = item.body
+        ? JSON.parse(item.body)
+        : {
+          currentChoice: {
+            label: 'none',
+            value: ''
+          },
+          formData: [],
+          rawData: ''
+        }
+      console.log('转换后的Body', body)
+      this.testRequest.body.formData = body.formData ? body.formData : []
+      this.testRequest.body.rawData = body.rawData ? body.rawData : ''
+      console.log(body.currentChoice)
+      this.testRequest.body.currentChoice = body.currentChoice
+      // this.testRequest.body.currentChoice.label =
+      // body.currentChoice.label ? body.currentChoice.label : 'none'
+      // this.testRequest.body.currentChoice.value =
+      // body.currentChoice.value ? body.currentChoice.value : ''
+      console.log('加载完的testRequest', this.testRequest)
     }
   },
   computed: {
@@ -222,28 +256,29 @@ export default {
     }
   },
   created () {
-    let params = [{
-      checked: true,
-      key: 'name',
-      value: 'Sean',
-      description: '用户名'
-    }, {
-      checked: true,
-      key: 'param',
-      value: '456789',
-      description: '密码'
-    }, {
-      checked: false,
-      key: 'de',
-      value: '王小虎',
-      description: '上海市普陀区金沙江路'
-    }]
-    let paramStr = JSON.stringify(params)
-    let parameters = JSON.parse(paramStr)
-    parameters.forEach(param => {
-      this.testRequest.parameters.push(param)
-    })
-
+    // let params = [{
+    //   checked: true,
+    //   key: 'name',
+    //   value: 'Sean',
+    //   description: '用户名'
+    // }, {
+    //   checked: true,
+    //   key: 'param',
+    //   value: '456789',
+    //   description: '密码'
+    // }, {
+    //   checked: false,
+    //   key: 'de',
+    //   value: '王小虎',
+    //   description: '上海市普陀区金沙江路'
+    // }]
+    // let paramStr = JSON.stringify(params)
+    // console.log(paramStr)
+    // let parameters = JSON.parse(paramStr)
+    // parameters.forEach(param => {
+    //   this.testRequest.parameters.push(param)
+    // })
+    this.convertToTestRequest(this.item)
     // let headers = [{
     //   checked: true,
     //   key: 'Content-Type',

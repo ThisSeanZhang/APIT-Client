@@ -95,6 +95,7 @@ export default {
       this.headers.forEach((param, index) => {
         param.index = index.toString()
       })
+      console.log('当前的Header', this.headers)
     }
   },
   created () {
@@ -105,7 +106,6 @@ export default {
     //   this.$refs.multipleTable.toggleRowSelection(param, param.checked)
     // })
     this.genTheIndex()
-    console.log('当前的Header', this.headers)
   }
 }
 </script>

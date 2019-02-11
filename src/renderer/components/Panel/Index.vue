@@ -11,6 +11,8 @@
         <main-table 
         v-on:removeTable="removeTable($event)" 
         v-bind:tables="tables"
+        v-bind:tableIsDot="tableIsDot"
+        v-model="currentTable"
         v-on:updateTable="updateTable($event)"></main-table>
       </el-main>
       <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
@@ -28,7 +30,8 @@ export default {
   data () {
     return {
       tables: [],
-      currentTable: 0
+      tableIsDot: [],
+      currentTable: null
     }
   },
   methods: {
@@ -45,27 +48,36 @@ export default {
       console.log('index uptade tables', this.tables)
       if (this.tables.length === 0) {
         this.tables.push({
-          title: 'My Tab 1',
-          name: '1',
+          apiName: 'My Tab 1',
+          aid: '99',
           content: 'My Tab 1 content'
         })
       }
     },
     pushToTable (table) {
-      this.tables.push(table)
+      if (this.tables.filter(t => t.aid === table.aid).length === 0) {
+        this.tables.push(table)
+      }
+      this.currentTable = table.aid
+      console.log(this.currentTable)
     }
   },
   created () {
     this.tables = [{
-      title: 'My Tab 1',
-      name: '1',
-      content: 'My Tab 1 content'
+      apiName: 'My Tab 1',
+      aid: '88',
+      parameters: '[{"checked":true,"key":"name","value":"Sean","description":"用户名"},{"checked":true,"key":"param","value":"456789","description":"密码"},{"checked":false,"key":"de","value":"王小虎","description":"上海市普陀区金沙江路"}]',
+      headers: '[{"checked":true,"key":"Content-Type","value":"multipart/form-data;charset=utf-8","description":"","index":"0"}]',
+      body: '{"currentChoice":{"value":"multipart/form-data","label":"formData"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":""}'
     }, {
-      title: 'My Tab 2',
-      name: '2',
-      content: 'My Tab 2 content'
+      apiName: 'My Tab 2',
+      aid: '66',
+      headers: '[{"checked":true,"key":"Content-Type","value":"application/json;charset=utf-8","description":"","index":"0"}]',
+      body: '{"currentChoice":{"value":"application/json","label":"raw"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":"ccccc"}'
     }]
-    this.currentTable = this.tables.length - 1
+    this.currentTable = this.tables[this.tables.length - 1].aid
+    console.log(this.currentTable)
+    this.tableIsDot = Array(this.tables.length).fill(false)
   }
 }
 </script>
