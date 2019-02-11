@@ -1,10 +1,10 @@
 <template>
   <el-tabs v-model="currentTable" type="card" closable @tab-remove="removeTab">
     <el-tab-pane
-      v-for="(item, index) in tables"
+      v-for="item in tables"
       :key="item.aid"
       :name="item.aid">
-      <span slot="label"><el-badge :is-dot="tableIsDot[index]" class="item"></el-badge>{{item.apiName}}</span>
+      <span slot="label"><el-badge :is-dot="isDot(item.aid)" class="item"></el-badge>{{item.apiName}}</span>
       <!-- {{index}}-{{item.content}} -->
       <each-table-panel v-bind:item="item"></each-table-panel>
     </el-tab-pane>
@@ -46,6 +46,10 @@
           })
         }
         this.$emit('updateTable', tabs.filter(tab => tab.aid !== targetName))
+      },
+      isDot (index) {
+        const target = this.tableIsDot.filter(dot => dot.index === index)[0]
+        return target ? target.modify : false
       }
     },
     computed: {

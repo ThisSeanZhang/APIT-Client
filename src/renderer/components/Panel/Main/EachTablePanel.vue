@@ -69,12 +69,14 @@ export default {
     testRequest: {
       handler: function (val, oldVal) {
         console.log('testRequest深度检查', val, oldVal)
+        console.log('当前是否允许检测修改', this.allowChangeDot)
       },
-      deep: false
+      deep: true
     }
   },
   data () {
     return {
+      allowChangeDot: false,
       inputVisible: false,
       inputValue: null,
       descriptionIsOpen: false,
@@ -199,6 +201,7 @@ export default {
       // this.testRequest.body.currentChoice.value =
       // body.currentChoice.value ? body.currentChoice.value : ''
       console.log('加载完的testRequest', this.testRequest)
+      this.allowChangeDot = true
     }
   },
   computed: {
