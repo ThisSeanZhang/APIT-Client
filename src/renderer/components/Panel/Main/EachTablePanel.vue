@@ -4,7 +4,7 @@
     <el-input
       class="input-new-tag"
       v-if="inputVisible"
-      v-model="testRequest.apiName"
+      v-model="apiName"
       ref="saveTagInput"
       size="small"
       @keyup.enter.native="handleInputConfirm"
@@ -33,7 +33,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-tabs type="border-card">
+          <el-tabs type="border-card" style="line-height: normal;">
             <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
             <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
             <el-tab-pane label="请求体"><request-body v-model="buildBody"></request-body></el-tab-pane>
@@ -53,6 +53,7 @@
     <div>{{item.content}}</div>
     <div>{{testRequest}}</div>
     <div>{{requestUrl}}</div>
+    <div>{{saveReqest}}</div>
   </div>
 </template>
 <script>
@@ -70,16 +71,19 @@ export default {
   name: 'each-table-panel',
   props: ['item'],
   components: {RequestParam, RequestHeaders, RequestBody, ResponseArea},
-  // watch: {
-  //   testRequest: {
-  //     handler: function (val, oldVal) {
-  //       console.log('testRequest深度检查', val, oldVal)
-  //     },
-  //     deep: true
-  //   }
-  // },
+  watch: {
+    testRequest: {
+      handler: function (val, oldVal) {
+        console.log('testRequest深度检查', val, oldVal)
+        console.log(this.objectComper(this.saveReqest.data, this.item))
+        this.item.isDot = !this.objectComper(this.saveReqest.data, this.item)
+      },
+      deep: true
+    }
+  },
   data () {
     return {
+      changedName: false,
       panelLodong: false,
       inputVisible: false,
       inputValue: null,
@@ -106,6 +110,21 @@ export default {
     }
   },
   methods: {
+    objectComper (o1, o2) {
+      const notCheck = ['aid', 'apiOwner', 'belongFolder', 'belongProject']
+      for (const [key, value] of Object.entries(o1)) {
+        // console.log(key, o2[key], value, o2[key] !== value)
+        if (!notCheck.includes(key) && o2[key] !== value && !(o2[key] === null && value === '')) {
+          return false
+        }
+      }
+      // Object.entries(o1).forEach(e => {
+      //   const [key, value] = e
+      //   console.log(key, value, o2[key] === value)
+      //   if (o2[key] !== value) return false
+      // })
+      return true
+    },
     showInput () {
       this.inputVisible = true
       this.$nextTick(_ => {
@@ -331,6 +350,15 @@ export default {
         }
       }
       return request
+    },
+    apiName: {
+      get: function () {
+        return this.testRequest.apiName
+      },
+      set: function (value) {
+        this.testRequest.apiName = value
+        this.item.showApiName = value
+      }
     },
     ...mapState(['developerId', 'defaultProject', 'defaultFolder'])
   },

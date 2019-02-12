@@ -4,7 +4,7 @@
       v-for="item in tables"
       :key="item.aid"
       :name="item.aid">
-      <span slot="label"><el-badge :is-dot="false" class="item"></el-badge>{{item.apiName}}</span>
+      <span slot="label"><el-badge :is-dot="item.isDot" class="item"></el-badge>{{item.showApiName}}</span>
       <!-- {{index}}-{{item.content}} -->
       <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)"></each-table-panel>
     </el-tab-pane>
@@ -46,11 +46,6 @@
         }
         this.$emit('updateTable', tabs.filter(tab => tab.aid !== targetName))
       },
-      // 暂时放弃修改小红点
-      // isDot (index) {
-      //   const target = this.tableIsDot.filter(dot => dot.index === index)[0]
-      //   return target ? target.modify : false
-      // }
       commitTable (target) {
         this.$emit('close:table', target)
         this.$emit('flash:projectTree')

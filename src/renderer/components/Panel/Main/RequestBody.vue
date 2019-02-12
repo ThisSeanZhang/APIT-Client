@@ -81,7 +81,7 @@ export default {
     updateBody () {
       // this.$emit('updateHeaderType', this.contentTypeValue)
       this.bodyData.currentChoice = this.contentType
-      // console.log('将要更新参数', this.bodyData)
+      console.log('将要更新参数', this.bodyData)
       this.$emit('input', this.bodyData)
     },
     isRawValue (value) {

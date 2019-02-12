@@ -39,7 +39,6 @@ export default {
     colseTable (target) {
       console.log('want remove targetName:', target)
       this.tables = this.tables.filter(tb => tb.aid !== target.remove)
-      target.append.aid = target.append.aid.toString()
       this.pushToTable(target.append)
     },
     updateTable (newTable) {
@@ -50,10 +49,11 @@ export default {
       }
     },
     pushToTable (table) {
+      table.aid = table.aid.toString()
       if (this.tables.filter(t => t.aid === table.aid).length === 0) {
+        table.isDot = false
+        table.showApiName = table.apiName
         this.tables.push(table)
-        // 暂时放弃修改小红点
-        // this.tableIsDot.push({ index: table.aid, modify: false })
       }
       this.currentTable = table.aid
       console.log(this.currentTable)
@@ -64,9 +64,16 @@ export default {
     currentTableTemplate: function () {
       this.templateIndex = this.templateIndex + 1
       return {
-        apiName: 'API ' + this.templateIndex,
+        isDot: false,
         aid: 'temp_api_' + this.templateIndex,
-        parameters: 'true<a_p>name<a_p><a_p>用户名<a_o>true<a_p>param<a_p>456789<a_p><a_o>false<a_p>de<a_p>王小虎<a_p>上海市普陀区金沙江路'
+        apiName: 'API ' + this.templateIndex,
+        showApiName: 'API ' + this.templateIndex,
+        method: 'GET',
+        bewrite: '',
+        url: '',
+        parameters: 'true<a_p>name<a_p><a_p>用户名<a_o>true<a_p>param<a_p>456789<a_p><a_o>false<a_p>de<a_p>王小虎<a_p>上海市普陀区金沙江路',
+        headers: '',
+        body: '{"currentChoice":{"value":"","label":"none"},"formData":"","rawData":""}'
       }
     }
   },
@@ -86,8 +93,6 @@ export default {
     this.tables = [this.currentTableTemplate(), this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
     console.log(this)
-    // 暂时放弃修改小红点
-    // this.tableIsDot = this.tables.map(tb => { return {index: tb.aid, modify: true} })
   }
 }
 </script>

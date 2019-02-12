@@ -47,7 +47,6 @@ export default {
         ajax(request).then(resp => {
           // TODO 获取成功后的相应操作
           // console.log(resp.data)
-          resp.data.data.aid = resp.data.data.aid.toString()
           this.$emit('get:api', resp.data)
         }).catch(error => {
           this.whenErrorMessage(error, () => {

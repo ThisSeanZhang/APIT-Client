@@ -14,7 +14,7 @@
     <el-table-column
       label="参数名">
       <template slot-scope="scope">
-        <el-input placeholder="key" v-model="scope.row.key" clearable>
+        <el-input size="mini" placeholder="key" v-model="scope.row.key" clearable>
           <el-select class="table-select" v-model="scope.row.type" slot="append" placeholder="请选择">
             <el-option label="Text" value="Text" ></el-option>
             <el-option label="File" value="File"></el-option>
@@ -25,17 +25,18 @@
     <el-table-column
       label="值">
       <template slot-scope="scope">
-        <el-input v-if="scope.row.type === 'Text'" placeholder="value" 
+        <el-input size="mini" v-if="scope.row.type === 'Text'" placeholder="value" 
         v-model="scope.row.value"
         clearable>
         </el-input>
-        <template v-else><input v-bind:data-index="scope.row.index" @change="fileBlur" type="file"></template>
+        <template v-else><input size="mini" v-bind:data-index="scope.row.index" @change="fileBlur" type="file"></template>
       </template>
     </el-table-column>
     <el-table-column
       label="描述">
       <template slot-scope="scope">
         <el-input
+        size="mini"
         placeholder="description"
         v-model="scope.row.description"
         clearable>

@@ -15,6 +15,7 @@
       label="参数名">
       <template slot-scope="scope">
         <el-input
+        size="mini"
         placeholder="key"
         v-model="scope.row.key"
         clearable>
@@ -25,6 +26,7 @@
       label="值">
       <template slot-scope="scope">
         <el-input
+        size="mini"
         placeholder="value"
         v-model="scope.row.value"
         clearable>
@@ -35,6 +37,7 @@
       label="描述">
       <template slot-scope="scope">
         <el-input
+        size="mini"
         placeholder="description"
         v-model="scope.row.description"
         clearable>
