@@ -6,7 +6,7 @@
       :name="item.aid">
       <span slot="label"><el-badge :is-dot="false" class="item"></el-badge>{{item.apiName}}</span>
       <!-- {{index}}-{{item.content}} -->
-      <each-table-panel v-bind:item="item"></each-table-panel>
+      <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)"></each-table-panel>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -23,11 +23,11 @@
     },
     watch: {
       tables: function (newTables, oldTables) {
-        console.log('new tables', newTables)
-        console.log('old tables', oldTables)
+        // console.log('new tables', newTables)
+        // console.log('old tables', oldTables)
         if (newTables.length === oldTables.length) {
           this.currentTable = this.tables[this.tables.length - 1].aid
-          console.log('update the current tables', this.currentTable)
+          // console.log('update the current tables', this.currentTable)
         }
       }
     },
@@ -45,12 +45,16 @@
           })
         }
         this.$emit('updateTable', tabs.filter(tab => tab.aid !== targetName))
-      }
+      },
       // 暂时放弃修改小红点
       // isDot (index) {
       //   const target = this.tableIsDot.filter(dot => dot.index === index)[0]
       //   return target ? target.modify : false
       // }
+      commitTable (target) {
+        this.$emit('close:table', target)
+        this.$emit('flash:projectTree')
+      }
     },
     computed: {
       currentTable: {
@@ -63,7 +67,8 @@
       }
     },
     created () {
-      console.log('created components MainTable init value', this.tables, this.currentTable)
+      console.log(this.$parent.$parent.$parent.$parent.$refs.aside)
+      // console.log('created components MainTable init value', this.tables, this.currentTable)
     }
   }
 </script>

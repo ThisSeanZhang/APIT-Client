@@ -1,7 +1,9 @@
 const state = {
   developerId: Number,
   developerName: String,
-  email: String
+  email: String,
+  defaultProject: Number,
+  defaultFolder: Number
 }
 
 const mutations = {
@@ -9,6 +11,8 @@ const mutations = {
     state.developerId = info.developerId
     state.developerName = info.developerName
     state.email = info.email
+    state.defaultProject = info.defaultProject
+    state.defaultFolder = info.defaultFolder
   }
 }
 

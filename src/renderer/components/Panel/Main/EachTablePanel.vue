@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="panelLodong">
     <span class="test"  @click="showDescription" ><i :class="iconClass"></i></span>
     <el-input
       class="input-new-tag"
@@ -11,7 +11,7 @@
       @blur="handleInputConfirm"
     ></el-input>
     <el-button v-else class="button-new-tag" size="small" @click="showInput">{{testRequest.apiName}}</el-button>
-    <el-button class="button-save" type="primary" size="small" @click="log('baocun')" icon="el-icon-document">保存</el-button>
+    <el-button class="button-save" type="primary" size="small" @click="commitCurrent" icon="el-icon-document">保存</el-button>
     <div :class="descriptionDivClass" >
       <el-input
         type="textarea"
@@ -61,20 +61,26 @@ import RequestParam from './RequestParam-2'
 import RequestHeaders from './RequestHeaders'
 import RequestBody from './RequestBody'
 import ResponseArea from './ResponseArea'
+import {ajax} from '../../../api/fetch'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('UserInfo')
+
 export default {
   name: 'each-table-panel',
   props: ['item'],
   components: {RequestParam, RequestHeaders, RequestBody, ResponseArea},
-  watch: {
-    testRequest: {
-      handler: function (val, oldVal) {
-        console.log('testRequest深度检查', val, oldVal)
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   testRequest: {
+  //     handler: function (val, oldVal) {
+  //       console.log('testRequest深度检查', val, oldVal)
+  //     },
+  //     deep: true
+  //   }
+  // },
   data () {
     return {
+      panelLodong: false,
       inputVisible: false,
       inputValue: null,
       descriptionIsOpen: false,
@@ -82,9 +88,9 @@ export default {
       testRequest: {
         aid: null,
         apiName: '',
-        method: 'GET',
+        method: '',
         bewrite: '',
-        url: 'http://blog.whileaway.io',
+        url: '',
         parameters: [],
         headers: [],
         body: {
@@ -118,8 +124,19 @@ export default {
     showDescription () {
       this.descriptionIsOpen = !this.descriptionIsOpen
     },
-    log (message) {
-      console.log(message)
+    commitCurrent () {
+      this.panelLodong = true
+      ajax(this.saveReqest).then(resp => {
+        console.log(resp)
+        // TODO 登入成功后的相应操作
+        this.$message.success('成功o(￣▽￣)ｄ')
+        this.$emit('commit:api', {remove: this.item.aid, append: resp.data.data})
+        this.panelLodong = false
+      }).catch(error => {
+        this.whenErrorMessage(error, () => {
+          this.$message.warning('还没有项目欸(●ˇ∀ˇ●)')
+        })
+      })
     },
     updateType (requestHeader) {
       // this.testRequest.body = requestBody
@@ -199,7 +216,23 @@ export default {
       // body.currentChoice.label ? body.currentChoice.label : 'none'
       // this.testRequest.body.currentChoice.value =
       // body.currentChoice.value ? body.currentChoice.value : ''
+      this.testRequest.apiOwner = item.apiOwner
+      this.testRequest.belongFolder = item.belongFolder
+      this.testRequest.belongProject = item.belongProject
       console.log('加载完的testRequest', this.testRequest)
+    },
+    whenErrorMessage (error, dowhat) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          dowhat()
+        }
+        this.$message.warning('_(:з)∠)_' + error.response.data.message)
+      } else if (error.request) {
+        this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
+      } else {
+        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
+      }
+      this.panelLodong = false
     }
   },
   computed: {
@@ -254,7 +287,29 @@ export default {
         ? this.requestBody
         : null
       return result
-    }
+    },
+    saveReqest: function () {
+      const aid = this.testRequest.aid
+      let request = {
+        method: isNaN(aid) ? 'POST' : 'PUT',
+        url: 'http://localhost:8080/apis/' + (isNaN(aid) ? '' : aid),
+        data: {
+          aid: isNaN(aid) ? null : aid,
+          apiName: this.testRequest.apiName,
+          method: this.testRequest.method,
+          bewrite: this.testRequest.bewrite,
+          url: this.testRequest.url,
+          parameters: JSON.stringify(this.testRequest.parameters),
+          headers: JSON.stringify(this.testRequest.headers),
+          body: JSON.stringify(this.testRequest.body),
+          apiOwner: this.developerId,
+          belongFolder: this.defaultProject,
+          belongProject: this.defaultFolder
+        }
+      }
+      return request
+    },
+    ...mapState(['developerId', 'defaultProject', 'defaultFolder'])
   },
   created () {
     // let params = [{

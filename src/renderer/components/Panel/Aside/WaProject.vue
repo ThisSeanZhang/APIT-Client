@@ -46,7 +46,7 @@ export default {
         }
         ajax(request).then(resp => {
           // TODO 获取成功后的相应操作
-          console.log(resp.data)
+          // console.log(resp.data)
           resp.data.data.aid = resp.data.data.aid.toString()
           this.$emit('get:api', resp.data)
         }).catch(error => {
@@ -55,14 +55,14 @@ export default {
           })
         })
       }
-      console.log(data)
+      // console.log(data)
     },
     openTheProject () {
       this.projectIsOpen = !this.projectIsOpen
     },
     loadFolders (node, resolve) {
-      console.log(node)
-      console.log(this.project)
+      // console.log(node)
+      // console.log(this.project)
       if (node.level === 0) {
         let request = {
           method: 'GET',
@@ -92,12 +92,12 @@ export default {
       // } else {
       //   this.getFolders(node, resolve)
       // }
-      console.log(this.data)
+      // console.log(this.data)
     },
     getFolders (node, container, request) {
       // let request = {method: 'GET', url: 'http://localhost:8080/floders'}
       ajax(request).then(resp => {
-        console.log(resp)
+        // console.log(resp)
         // TODO 登入成功后的相应操作
         container(resp.data.data)
       }).catch(error => {
@@ -119,7 +119,7 @@ export default {
       }
     },
     editProject () {
-      console.log('编辑')
+      // console.log('编辑')
     }
   },
   computed: {
@@ -131,7 +131,7 @@ export default {
     }
   },
   created () {
-    console.log('创建了一个Project目录结构')
+    // console.log('创建了一个Project目录结构')
     // this.data = [{
     //   label: '一级 1',
     //   leaf: false,

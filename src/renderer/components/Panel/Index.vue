@@ -4,12 +4,14 @@
     <el-container>
       <el-aside>
         <wa-aside 
+        ref="aside"
         v-bind:tables="tables"
         v-on:pushToTable="pushToTable($event)"></wa-aside>
       </el-aside>
       <el-main>
         <main-table 
-        v-on:removeTable="removeTable($event)" 
+        v-on:flash:projectTree="flashProjectTree"
+        v-on:close:table="colseTable($event)"
         v-bind:tables="tables"
         v-model="currentTable"
         v-on:updateTable="updateTable($event)"></main-table>
@@ -29,27 +31,21 @@ export default {
   data () {
     return {
       tables: [],
-      currentTable: null
+      currentTable: null,
+      templateIndex: 0
     }
   },
   methods: {
-    removeTable (targetName) {
-      console.log('want remove targetName:' + targetName)
-      // let tabs = this.tables
-      // let activeTab = this.currentTable
-      // console.log('emit from table', index)
-      // this.tables.splice(index, 1)
-      // this.tables = this.tables.filter(tab => tab.name !== targetName)
+    colseTable (target) {
+      console.log('want remove targetName:' + target)
+      this.tables = this.tables.filter(tb => tb.aid !== target.remove)
+      this.pushToTable(target.append)
     },
     updateTable (newTable) {
       this.tables = newTable
       console.log('index uptade tables', this.tables)
       if (this.tables.length === 0) {
-        this.tables.push({
-          apiName: 'My Tab 1',
-          aid: '99',
-          content: 'My Tab 1 content'
-        })
+        this.tables.push(this.currentTableTemplate())
       }
     },
     pushToTable (table) {
@@ -60,23 +56,34 @@ export default {
       }
       this.currentTable = table.aid
       console.log(this.currentTable)
+    },
+    flashProjectTree () {
+      this.$refs.aside.reflash()
+    },
+    currentTableTemplate: function () {
+      this.templateIndex = this.templateIndex + 1
+      return {
+        apiName: 'API ' + this.templateIndex,
+        aid: 'temp_api_' + this.templateIndex
+      }
     }
   },
   created () {
-    this.tables = [{
-      apiName: 'My Tab 1',
-      aid: 'temp-1',
-      parameters: '[{"checked":true,"key":"name","value":"Sean","description":"用户名"},{"checked":true,"key":"param","value":"456789","description":"密码"},{"checked":false,"key":"de","value":"王小虎","description":"上海市普陀区金沙江路"}]',
-      headers: '[{"checked":true,"key":"Content-Type","value":"multipart/form-data;charset=utf-8","description":"","index":"0"}]',
-      body: '{"currentChoice":{"value":"multipart/form-data","label":"formData"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":""}'
-    }, {
-      apiName: 'My Tab 2',
-      aid: 'temp-2',
-      headers: '[{"checked":true,"key":"Content-Type","value":"application/json;charset=utf-8","description":"","index":"0"}]',
-      body: '{"currentChoice":{"value":"application/json","label":"raw"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":"ccccc"}'
-    }]
+    // this.tables = [{
+    //   apiName: 'My Tab 1',
+    //   aid: 'temp-1',
+    //   parameters: '[{"checked":true,"key":"name","value":"Sean","description":"用户名"},{"checked":true,"key":"param","value":"456789","description":"密码"},{"checked":false,"key":"de","value":"王小虎","description":"上海市普陀区金沙江路"}]',
+    //   headers: '[{"checked":true,"key":"Content-Type","value":"multipart/form-data;charset=utf-8","description":"","index":"0"}]',
+    //   body: '{"currentChoice":{"value":"multipart/form-data","label":"formData"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":""}'
+    // }, {
+    //   apiName: 'My Tab 2',
+    //   aid: 'temp-2',
+    //   headers: '[{"checked":true,"key":"Content-Type","value":"application/json;charset=utf-8","description":"","index":"0"}]',
+    //   body: '{"currentChoice":{"value":"application/json","label":"raw"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":"ccccc"}'
+    // }]
+    this.tables = [this.currentTableTemplate(), this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
-    console.log(this.currentTable)
+    console.log(this)
     // 暂时放弃修改小红点
     // this.tableIsDot = this.tables.map(tb => { return {index: tb.aid, modify: true} })
   }
