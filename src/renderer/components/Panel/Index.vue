@@ -11,7 +11,6 @@
         <main-table 
         v-on:removeTable="removeTable($event)" 
         v-bind:tables="tables"
-        v-bind:tableIsDot="tableIsDot"
         v-model="currentTable"
         v-on:updateTable="updateTable($event)"></main-table>
       </el-main>
@@ -30,7 +29,6 @@ export default {
   data () {
     return {
       tables: [],
-      tableIsDot: [],
       currentTable: null
     }
   },
@@ -57,7 +55,8 @@ export default {
     pushToTable (table) {
       if (this.tables.filter(t => t.aid === table.aid).length === 0) {
         this.tables.push(table)
-        this.tableIsDot.push({ index: table.aid, modify: false })
+        // 暂时放弃修改小红点
+        // this.tableIsDot.push({ index: table.aid, modify: false })
       }
       this.currentTable = table.aid
       console.log(this.currentTable)
@@ -78,7 +77,8 @@ export default {
     }]
     this.currentTable = this.tables[this.tables.length - 1].aid
     console.log(this.currentTable)
-    this.tableIsDot = this.tables.map(tb => { return {index: tb.aid, modify: true} })
+    // 暂时放弃修改小红点
+    // this.tableIsDot = this.tables.map(tb => { return {index: tb.aid, modify: true} })
   }
 }
 </script>

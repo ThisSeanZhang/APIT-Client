@@ -81,9 +81,9 @@ export default {
     addParam () {
       this.headers.push({
         checked: true,
-        key: '2016-05-03',
-        value: '王小虎',
-        description: '上海市普陀区金沙江路',
+        key: '',
+        value: '',
+        description: '',
         index: this.headers.length.toString()
       })
     },
