@@ -196,11 +196,12 @@ export default {
       this.testRequest.bewrite = item.bewrite ? item.bewrite : ''
       this.testRequest.url = item.url ? item.url : ''
       // this.testRequest.parameters = item.parameters ? JSON.parse(item.parameters) : []
-      console.log(item.parameters)
       this.testRequest.parameters = item.parameters
         ? this.convertToList(item.parameters, info => { return {checked: (info[0] === 'true'), key: info[1], value: info[2], description: info[3]} })
         : []
-      this.testRequest.headers = item.headers ? JSON.parse(item.headers) : []
+      this.testRequest.headers = item.headers
+        ? this.convertToList(item.headers, info => { return {checked: (info[0] === 'true'), key: info[1], value: info[2], description: info[3]} })
+        : []
       const body = item.body
         ? JSON.parse(item.body)
         : {
@@ -208,11 +209,13 @@ export default {
             label: 'none',
             value: ''
           },
-          formData: [],
+          formData: '',
           rawData: ''
         }
       console.log('转换后的Body', body)
-      this.testRequest.body.formData = body.formData ? body.formData : []
+      this.testRequest.body.formData = body.formData
+        ? this.convertToList(body.formData, info => { return {checked: (info[0] === 'true'), key: info[1], type: info[2], value: info[3], description: info[4]} })
+        : []
       this.testRequest.body.rawData = body.rawData ? body.rawData : ''
       console.log(body.currentChoice)
       this.testRequest.body.currentChoice = body.currentChoice
@@ -316,8 +319,12 @@ export default {
           bewrite: this.testRequest.bewrite,
           url: this.testRequest.url,
           parameters: this.convertToStr(this.testRequest.parameters, e => [e.checked, e.key, e.value, e.description]),
-          headers: JSON.stringify(this.testRequest.headers),
-          body: JSON.stringify(this.testRequest.body),
+          headers: this.convertToStr(this.testRequest.headers, e => [e.checked, e.key, e.value, e.description]),
+          body: JSON.stringify({
+            currentChoice: this.testRequest.body.currentChoice,
+            formData: this.convertToStr(this.testRequest.body.formData, e => [e.checked, e.key, e.type, e.type === 'Text' ? e.value : '', e.description]),
+            rawData: this.testRequest.body.rawData
+          }),
           apiOwner: this.developerId,
           belongFolder: this.defaultProject,
           belongProject: this.defaultFolder

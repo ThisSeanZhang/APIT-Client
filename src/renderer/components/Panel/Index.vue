@@ -37,8 +37,9 @@ export default {
   },
   methods: {
     colseTable (target) {
-      console.log('want remove targetName:' + target)
+      console.log('want remove targetName:', target)
       this.tables = this.tables.filter(tb => tb.aid !== target.remove)
+      target.append.aid = target.append.aid.toString()
       this.pushToTable(target.append)
     },
     updateTable (newTable) {
