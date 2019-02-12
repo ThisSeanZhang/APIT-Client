@@ -195,7 +195,11 @@ export default {
       this.testRequest.method = item.method ? item.method : 'GET'
       this.testRequest.bewrite = item.bewrite ? item.bewrite : ''
       this.testRequest.url = item.url ? item.url : ''
-      this.testRequest.parameters = item.parameters ? JSON.parse(item.parameters) : []
+      // this.testRequest.parameters = item.parameters ? JSON.parse(item.parameters) : []
+      console.log(item.parameters)
+      this.testRequest.parameters = item.parameters
+        ? this.convertToList(item.parameters, info => { return {checked: (info[0] === 'true'), key: info[1], value: info[2], description: info[3]} })
+        : []
       this.testRequest.headers = item.headers ? JSON.parse(item.headers) : []
       const body = item.body
         ? JSON.parse(item.body)
@@ -233,6 +237,18 @@ export default {
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
       }
       this.panelLodong = false
+    },
+    convertToList (value, doWhat) {
+      return value.split('<a_o>').map(e => {
+        // let info = e.split('<a_p>')
+        // return {checked: (info[0] === 'true'), key: info[1], value: info[2], description: info[3]}
+        return doWhat(e.split('<a_p>'))
+      })
+    },
+    convertToStr (list, doWhat) {
+      return list
+        ? list.map(e => doWhat(e).join('<a_p>')).join('<a_o>')
+        : ''
     }
   },
   computed: {
@@ -299,7 +315,7 @@ export default {
           method: this.testRequest.method,
           bewrite: this.testRequest.bewrite,
           url: this.testRequest.url,
-          parameters: JSON.stringify(this.testRequest.parameters),
+          parameters: this.convertToStr(this.testRequest.parameters, e => [e.checked, e.key, e.value, e.description]),
           headers: JSON.stringify(this.testRequest.headers),
           body: JSON.stringify(this.testRequest.body),
           apiOwner: this.developerId,

@@ -15,17 +15,22 @@
         </div>
       </el-main>
     </el-container>
+    <el-input v-model="input" placeholder="请输入内容"></el-input>
+    <param-t v-model="input"></param-t>
   </el-container>
 </template>
 <script>
 import DeveloperRegister from './DeveloperRegister'
 import DeveloperSignIn from './DeveloperSignIn'
+import ParamT from './Param-T'
+
 export default {
   name: 'account-index',
-  components: {DeveloperRegister, DeveloperSignIn},
+  components: {DeveloperRegister, DeveloperSignIn, ParamT},
   data () {
     return {
-      readyLogin: true
+      readyLogin: true,
+      input: 'ccc<p><p>ggg<o>bbb<p>ccc<p>ttt<o>aaa<p>fff<p>ttt'
     }
   },
   methods: {
