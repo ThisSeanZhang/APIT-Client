@@ -351,8 +351,8 @@ export default {
             rawData: this.testRequest.body.rawData
           }),
           apiOwner: this.developerId,
-          belongFolder: this.defaultProject,
-          belongProject: this.defaultFolder
+          belongFolder: this.defaultNode,
+          belongProject: this.defaultProject
         }
       }
       return request
@@ -366,7 +366,7 @@ export default {
         this.item.showApiName = value
       }
     },
-    ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed'])
+    ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed', 'defaultNode'])
   },
   created () {
     // let params = [{
