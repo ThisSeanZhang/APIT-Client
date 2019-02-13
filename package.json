@@ -1,6 +1,6 @@
 {
-  "name": "api",
-  "version": "0.0.1",
+  "name": "APIT",
+  "version": "0.1-alpha",
   "author": "",
   "description": "An electron-vue project",
   "license": null,
@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "api",
+    "productName": "APIT",
     "appId": "io.whileaway.apitest",
     "directories": {
       "output": "build"
