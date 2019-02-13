@@ -79,10 +79,9 @@ export default {
     text-align: right;
   }
   .fade-enter-active, .fade-leave-active {
-    // transition: opacity .5s;
     transition: all .3s ease;
   }
-  .fade-enter, /* .fade-leave-active below version 2.1.8 */ {
+  .fade-enter {
     transform: translateX(-400px);
     opacity: 0;
   }

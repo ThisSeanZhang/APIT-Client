@@ -22,7 +22,6 @@
 </template>
 
 <script>
-// import axios from 'axios'
 import {ajax} from '../../api/fetch'
 import { Loading } from 'element-ui'
 export default {
@@ -89,7 +88,6 @@ export default {
   },
   methods: {
     developerRegister () {
-      // this.developerNameExist = true
       this.$refs.register_form.validate(isAllPass => {
         if (isAllPass) {
           let loding = Loading.service({
@@ -99,7 +97,7 @@ export default {
           })
           let request = {method: 'GET', url: 'http://localhost:8080/developers/developer-name/' + this.registerForm.developerName}
           ajax(request).then(resp => {
-            console.log(resp)
+            // console.log(resp)
             this.developerNameExist = true
             this.$refs.register_form.validateField('developerName')
             this.$message('当前用户名已存在(●ˇ∀ˇ●)')
@@ -118,7 +116,7 @@ export default {
     sendRegisterInfo () {
       let request = {method: 'POST', url: 'http://localhost:8080/developers', data: this.registerForm}
       return ajax(request).then(resp => {
-        console.log(resp)
+        // console.log(resp)
         this.$message({type: 'success', message: '注册成功[]~(￣▽￣)~*'})
         this.$emit('input', true)
       }).catch(error => {

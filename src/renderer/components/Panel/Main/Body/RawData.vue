@@ -23,7 +23,7 @@ export default {
     }
   },
   created () {
-    console.log(this.value)
+    // console.log(this.value)
     this.context = this.value
   }
 }

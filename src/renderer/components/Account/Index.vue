@@ -1,7 +1,6 @@
 <template>
   <el-container>
     <el-header>
-      <!-- <p @click="changeToPanel">Header</p> -->
       <account-header></account-header>
     </el-header>
     <el-container>
@@ -9,8 +8,6 @@
         <account-main v-on:login:success="loginSuccess" ></account-main>
       </el-main>
     </el-container>
-    <!-- <el-input v-model="input" placeholder="请输入内容"></el-input>
-    <param-t v-model="input"></param-t> -->
   </el-container>
 </template>
 <script>
@@ -28,10 +25,8 @@ export default {
 </script>
 <style lang="scss" type="text/css" scoped>
   .el-header {
-    /* background-color: #B3C0D1; */
     padding: 0px;
     color: #333;
-    /* height: 36px; */
     border-bottom: 1px solid #dcdfe6;
   }
   

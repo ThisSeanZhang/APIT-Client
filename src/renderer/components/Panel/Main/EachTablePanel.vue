@@ -28,8 +28,7 @@
             <el-select v-model="testRequest.method" slot="prepend" placeholder="请选择">
               <el-option v-for="method in httpMethod" :key="method" :label="method" :value="method"></el-option>
             </el-select>
-            <el-button slot="append" @click="sendRequest" icon="el-icon-sort">发送</el-button>
-            <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
+            <el-button slot="append" @click="sendRequest" icon="el-icon-sort" :disabled="isSending">发送</el-button>
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -37,23 +36,12 @@
             <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
             <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
             <el-tab-pane label="请求体"><request-body v-model="buildBody"></request-body></el-tab-pane>
-            <!-- <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
           </el-tabs>
           
         </el-form-item>
       </el-form>
     </div>
     <response-area v-bind:response="response"></response-area>
-
-
-    <!-- <el-button-group slot="append" >
-          <el-button type="primary" @click="checkeUrlStartWithHTTP" icon="el-icon-edit"></el-button>
-          <el-button type="primary" icon="el-icon-share"></el-button>
-        </el-button-group> -->
-    <!-- <div>{{item.content}}</div>
-    <div>{{testRequest}}</div>
-    <div>{{requestUrl}}</div>
-    <div>{{saveReqest}}</div> -->
   </div>
 </template>
 <script>
@@ -74,8 +62,8 @@ export default {
   watch: {
     testRequest: {
       handler: function (val, oldVal) {
-        console.log('testRequest深度检查', val, oldVal)
-        console.log(this.objectComper(this.saveReqest.data, this.item))
+        // console.log('testRequest深度检查', val, oldVal)
+        // console.log(this.objectComper(this.saveReqest.data, this.item))
         this.item.isDot = !this.objectComper(this.saveReqest.data, this.item)
       },
       deep: true
@@ -83,6 +71,7 @@ export default {
   },
   data () {
     return {
+      isSending: false,
       changedName: false,
       panelLodong: false,
       inputVisible: false,
@@ -118,11 +107,6 @@ export default {
           return false
         }
       }
-      // Object.entries(o1).forEach(e => {
-      //   const [key, value] = e
-      //   console.log(key, value, o2[key] === value)
-      //   if (o2[key] !== value) return false
-      // })
       return true
     },
     showInput () {
@@ -133,12 +117,7 @@ export default {
       if (!this.descriptionIsOpen) this.showDescription()
     },
     handleInputConfirm () {
-      // let inputValue = this.inputValue
-      // if (inputValue) {
-      //   this.dynamicTags.push(inputValue)
-      // }
       this.inputVisible = false
-      // this.inputValue = ''
     },
     showDescription () {
       this.descriptionIsOpen = !this.descriptionIsOpen
@@ -146,7 +125,7 @@ export default {
     commitCurrent () {
       this.panelLodong = true
       ajax(this.saveReqest).then(resp => {
-        console.log(resp)
+        // console.log(resp)
         // TODO 登入成功后的相应操作
         this.$message.success('成功o(￣▽￣)ｄ')
         this.$emit('commit:api', {remove: this.item.aid, append: resp.data.data})
@@ -158,9 +137,6 @@ export default {
       })
     },
     updateType (requestHeader) {
-      // this.testRequest.body = requestBody
-      // console.log(requestBody[requestBody.currentChoice.label])
-      // let requestHeader = requestBody.currentChoice.value
       this.testRequest.headers = this.testRequest.headers.filter(head => head.key !== 'Content-Type')
       if (requestHeader === '') {
         return null
@@ -175,11 +151,33 @@ export default {
       // console.log(JSON.stringify(this.testRequest.headers))
       // console.log(JSON.stringify(this.testRequest.body))
     },
+    checkTheRequestLegal (perRequest) {
+      if (perRequest.url === '' || perRequest.url === null || perRequest.url === 'http://') {
+        return '(●ˇ∀ˇ●)请求的URL不能为空哦'
+      }
+      return null
+    },
     sendRequest () {
-      Sender(this.request, (xmlhttp) => {
+      const checkResult = this.checkTheRequestLegal(this.request)
+      if (checkResult) {
+        this.$message.warning(checkResult)
+        return null
+      }
+      this.isSending = true
+      Sender(this.request).then((xmlhttp) => {
         this.response = xmlhttp.response
-        console.log(this.response)
+        this.isSending = false
+      }).catch(error => {
+        console.log(error)
+        this.$message.error(error.message)
+        this.isSending = false
       })
+
+      // Sender(this.request, (xmlhttp) => {
+      //   this.response = xmlhttp.response
+      //   this.isSending = false
+      //   // console.log(this.response)
+      // })
       // this.ajaxSender.defaults.headers.post['Content-Type'] = this.finalContentType
       // axios({
       //   method: this.testRequest.method,
@@ -199,12 +197,8 @@ export default {
       })
       return list
     },
-    testModifyInPraents () {
-      console.log(this.testRequest.body)
-      console.log(this.requestBody)
-    },
     checkeUrlStartWithHTTP () {
-      let http = /^http:\/\//i
+      let http = /^http:\/\/|https:\/\//i
       this.testRequest.url = this.testRequest.url.trim()
       this.testRequest.url = this.testRequest.url.search(http) !== -1 ? this.testRequest.url : 'http://' + this.testRequest.url
     },
@@ -231,21 +225,17 @@ export default {
           formData: '',
           rawData: ''
         }
-      console.log('转换后的Body', body)
+      // console.log('转换后的Body', body)
       this.testRequest.body.formData = body.formData
         ? this.convertToList(body.formData, info => { return {checked: (info[0] === 'true'), key: info[1], type: info[2], value: info[3], description: info[4]} })
         : []
       this.testRequest.body.rawData = body.rawData ? body.rawData : ''
-      console.log(body.currentChoice)
+      // console.log(body.currentChoice)
       this.testRequest.body.currentChoice = body.currentChoice
-      // this.testRequest.body.currentChoice.label =
-      // body.currentChoice.label ? body.currentChoice.label : 'none'
-      // this.testRequest.body.currentChoice.value =
-      // body.currentChoice.value ? body.currentChoice.value : ''
       this.testRequest.apiOwner = item.apiOwner
       this.testRequest.belongFolder = item.belongFolder
       this.testRequest.belongProject = item.belongProject
-      console.log('加载完的testRequest', this.testRequest)
+      // console.log('加载完的testRequest', this.testRequest)
     },
     whenErrorMessage (error, dowhat) {
       if (error.response) {
@@ -294,7 +284,7 @@ export default {
       set: function (body) {
         this.updateType(body.currentChoice.value)
         this.testRequest.body = body
-        console.log(this.testRequest)
+        // console.log(this.testRequest)
       }
     },
     requestBody: function () {
@@ -363,48 +353,7 @@ export default {
     ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed'])
   },
   created () {
-    // let params = [{
-    //   checked: true,
-    //   key: 'name',
-    //   value: 'Sean',
-    //   description: '用户名'
-    // }, {
-    //   checked: true,
-    //   key: 'param',
-    //   value: '456789',
-    //   description: '密码'
-    // }, {
-    //   checked: false,
-    //   key: 'de',
-    //   value: '王小虎',
-    //   description: '上海市普陀区金沙江路'
-    // }]
-    // let paramStr = JSON.stringify(params)
-    // console.log(paramStr)
-    // let parameters = JSON.parse(paramStr)
-    // parameters.forEach(param => {
-    //   this.testRequest.parameters.push(param)
-    // })
     this.convertToTestRequest(this.item)
-    // let headers = [{
-    //   checked: true,
-    //   key: 'Content-Type',
-    //   value: 'application/json',
-    //   description: 'Json方式'
-    // }]
-    // let headerStr = JSON.stringify(headers)
-    // this.testRequest.headers = JSON.parse(headerStr)
-
-    // let aaa = JSON.stringify(this.testRequest.parameters)
-    // console.log(JSON.parse('{"AAA":"BBB","json":' + aaa + '}'))
-    // let bbb = {
-    //   name: 'name',
-    //   param: aaa,
-    //   de: 'de'
-    // }
-    // let ddd = JSON.stringify(bbb)
-    // console.log(ddd)
-    // console.log(JSON.parse(JSON.parse(ddd).param))
   }
 }
 </script>
@@ -453,7 +402,4 @@ export default {
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }
-  /* .el-form-item{
-    margin-bottom: 0px;
-  } */
 </style>

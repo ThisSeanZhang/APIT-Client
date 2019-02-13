@@ -67,7 +67,7 @@ export default {
           })
           let request = {method: 'POST', url: 'http://localhost:8080/session', data: this.loginform}
           ajax(request).then(resp => {
-            console.log(resp)
+            // console.log(resp)
             // TODO 登入成功后的相应操作
             this.$message('登入成功o(￣▽￣)ｄ')
             this.setUserInfo(resp.data.data)
@@ -97,7 +97,7 @@ export default {
         // console.log(error.request)
         this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
       } else {
-        console.log('Error', error.message)
+        // console.log('Error', error.message)
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
       }
       // console.log(error.config)

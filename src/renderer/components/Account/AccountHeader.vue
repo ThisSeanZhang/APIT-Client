@@ -15,11 +15,7 @@ export default {
   name: 'account-header'
 }
 </script>
-<style type="text/css">
-/* .el-menu-demo{
-  float: right;
-  
-} */
+<style type="text/css" scoped>
 .el-row {
   margin-left: 0px!important;
   margin-right: 0px!important;

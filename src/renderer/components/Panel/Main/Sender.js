@@ -1,15 +1,54 @@
+import CommonError from '../../../config/CommonError'
 const xmlhttp = new XMLHttpRequest()
+let TIME_OUT_MAX = 5000
+export default (option = {url: '', data: {}, headers: [], method: 'GET'}, then) => {
+  // xmlhttp.onreadystatechange = () => {
+  //   if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+  //     then(xmlhttp)
+  //     // console.log(xmlhttp.getAllResponseHeaders())
+  //   }
+  // }
+  // xmlhttp.open(option.method, option.url, true)
+  // option.headers.forEach(head => {
+  //   xmlhttp.setRequestHeader(head.key, head.value)
+  // })
+  // xmlhttp.send(option.data)
+  return new Promise(function (resolve, reject) {
+    xmlhttp.open(option.method.toUpperCase(), option.url, true)
 
-module.exports = (option = {url: '', data: {}, headers: [], method: 'GET'}, then) => {
-  xmlhttp.onreadystatechange = () => {
-    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-      then(xmlhttp)
-      console.log(xmlhttp.getAllResponseHeaders())
+    xmlhttp.timeout = TIME_OUT_MAX
+
+    xmlhttp.onload = function () {
+      resolve(xmlhttp)
+      // if (this.status >= 200 && this.status < 300) {
+      //   resolve(JSON.parse(xmlhttp.response))
+      // } else {
+      //   const response = JSON.parse(xmlhttp.response)
+      //   reject(new CommonError(
+      //     this.status,
+      //     response.data ? response.data.message : response.message
+      //   ))
+      // }
     }
-  }
-  xmlhttp.open(option.method, option.url, true)
-  option.headers.forEach(head => {
-    xmlhttp.setRequestHeader(head.key, head.value)
+
+    xmlhttp.onerror = function (e) {
+      reject(new CommonError(
+        this.status,
+        '┑(￣Д ￣)┍,请求发送失败了'
+      ))
+    }
+
+    xmlhttp.ontimeout = function (e) {
+      reject(new CommonError(
+        this.status,
+        '(ノへ￣、)请求超时了'
+      ))
+    }
+
+    option.headers.forEach(head => {
+      xmlhttp.setRequestHeader(head.key, head.value)
+    })
+
+    xmlhttp.send(option.data)
   })
-  xmlhttp.send(option.data)
 }

@@ -68,7 +68,6 @@ export default {
 <style type="text/css">
 /* .el-menu-demo{
   float: right;
-  
 } */
 .el-row {
   margin-left: 0px!important;

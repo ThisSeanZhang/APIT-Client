@@ -36,7 +36,7 @@ export default {
       let request = {method: 'GET', url: 'http://localhost:8080/projects/owner/' + this.developerId}
       this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {
-        console.log(resp)
+        // console.log(resp)
         // TODO 登入成功后的相应操作
         this.projects = resp.data.data
         this.obtionStatus = this.requestStatus.SUCCESS
@@ -60,9 +60,6 @@ export default {
         this.obtionStatus = this.requestStatus.REQUEST_ERROR
       }
     },
-    pushAPIinfoToTables (param) {
-      console.log('得到的api参数', param)
-    },
     reflash () {
       this.projects = []
       this.findAllProjectByDeveloperId()
@@ -78,19 +75,6 @@ export default {
   created () {
     this.obtionStatus = this.requestStatus.FETCHING
     this.findAllProjectByDeveloperId()
-    // this.projects = [{
-    //   pid: 1,
-    //   projectName: 'OTMS期末项目',
-    //   projectOwner: 1
-    // }, {
-    //   pid: 2,
-    //   projectName: 'TMS-115项目',
-    //   projectOwner: 1
-    // }, {
-    //   pid: 3,
-    //   projectName: 'APIT毕设',
-    //   projectOwner: 1
-    // }]
   }
 }
 </script>
@@ -120,36 +104,4 @@ export default {
     align-items: center;
   }
 }
-
-// .wa_project{
-//   padding-top: 42px;
-//   height: 42px;
-//   position: relative;
-//   overflow: hidden;
-//   // background-color: hotpink;
-//   // border-bottom: 1px solid #333;
-//   border-bottom: 1px solid #dcdfe6;
-//   .test{
-//     position: absolute;
-//     top: 0px;
-//     padding: 15px;
-//     i{
-//       position: inherit;
-//     }
-//   }
-//   .edit{
-//     position: absolute;
-//     top: 0px;
-//     padding: 13px;
-//     right: 0px;
-//   }
-//   .project_title{
-//     position: absolute;
-//     top: 0px;
-//     padding: 10px 0px 10px 40px;
-//   }
-//   .project_header{
-//     cursor: pointer;
-//   }
-// }
 </style>

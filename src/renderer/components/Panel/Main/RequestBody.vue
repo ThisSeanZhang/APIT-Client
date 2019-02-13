@@ -29,10 +29,6 @@
     <template v-else-if="radioType === bodyType.raw">
       <raw-data v-model="rawData" ></raw-data>
     </template>
-    <!-- <br>
-    {{radioType}}
-    {{selectType}}
-    {{type}} -->
   </div>
 </template>
 <script>
@@ -79,9 +75,8 @@ export default {
   },
   methods: {
     updateBody () {
-      // this.$emit('updateHeaderType', this.contentTypeValue)
       this.bodyData.currentChoice = this.contentType
-      console.log('将要更新参数', this.bodyData)
+      // console.log('将要更新参数', this.bodyData)
       this.$emit('input', this.bodyData)
     },
     isRawValue (value) {
@@ -92,8 +87,6 @@ export default {
   },
   watch: {
     formData: function () {
-      // console.log('Watch检测到fromData的更新', this.formData)
-      // this.formData[1].key = 'modify'
       // console.log(this.bodyData)
       this.updateBody()
     },
@@ -133,22 +126,6 @@ export default {
     }
   },
   created () {
-    // let formData = [{
-    //   checked: true,
-    //   key: 'filename',
-    //   type: 'File',
-    //   value: null,
-    //   description: '头像文件'
-    // }, {
-    //   checked: true,
-    //   key: 'userId',
-    //   type: 'Text',
-    //   value: 'Sean',
-    //   description: '用户名'
-    // }]
-    // let formDataStr = JSON.stringify(formData)
-    // this.formData = JSON.parse(formDataStr)
-    // this.radioType = this.bodyType.none
     this.bodyData = this.value
     this.radioType = this.bodyType[this.bodyData.currentChoice.label]
     this.selectType = this.isRawValue(this.bodyData.currentChoice.value)

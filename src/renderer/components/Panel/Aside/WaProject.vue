@@ -3,8 +3,9 @@
     <div class="project_header" @click="openTheProject()">
       <span class="test"><i :class="iconClass"></i></span>
       <span class="project_title">{{project.projectName}}</span>
-      <span class="edit"  >
-        <i @click.stop="editProject" class="el-icon-edit-outline"></i></span>
+      <!-- <span class="edit"  >
+        <i @click.stop="editProject" class="el-icon-edit-outline"></i>
+      </span> -->
     </div>
     <div>
       <el-tree 
@@ -84,7 +85,6 @@ export default {
       // console.log(this.data)
     },
     getFolders (node, container, request) {
-      // let request = {method: 'GET', url: 'http://localhost:8080/floders'}
       ajax(request).then(resp => {
         // console.log(resp)
         // TODO 登入成功后的相应操作
@@ -118,8 +118,6 @@ export default {
     projectClass: function () {
       return this.projectIsOpen ? 'wa_project_focus wa_project' : 'wa_project_close wa_project'
     }
-  },
-  created () {
   }
 }
 </script>

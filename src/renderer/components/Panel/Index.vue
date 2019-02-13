@@ -21,7 +21,6 @@
         v-model="currentTable"
         v-on:updateTable="updateTable($event)"></main-table>
       </el-main>
-      <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
     </el-container>
     <el-footer>Footer</el-footer>
     <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
@@ -52,13 +51,13 @@ export default {
   },
   methods: {
     colseTable (target) {
-      console.log('want remove targetName:', target)
+      // console.log('want remove targetName:', target)
       this.tables = this.tables.filter(tb => tb.aid !== target.remove)
       this.pushToTable(target.append)
     },
     updateTable (newTable) {
       this.tables = newTable
-      console.log('index uptade tables', this.tables)
+      // console.log('index uptade tables', this.tables)
       if (this.tables.length === 0) {
         this.templateIndex = 0
         this.tables.push(this.currentTableTemplate())
@@ -72,7 +71,7 @@ export default {
         this.tables.push(table)
       }
       this.currentTable = table.aid
-      console.log(this.currentTable)
+      // console.log(this.currentTable)
     },
     flashProjectTree () {
       this.$refs.aside.reflash()
@@ -87,7 +86,7 @@ export default {
         method: 'GET',
         bewrite: '',
         url: '',
-        parameters: 'true<a_p>name<a_p><a_p>用户名<a_o>true<a_p>param<a_p>456789<a_p><a_o>false<a_p>de<a_p>王小虎<a_p>上海市普陀区金沙江路',
+        parameters: '',
         headers: '',
         body: '{"currentChoice":{"value":"","label":"none"},"formData":"","rawData":""}'
       }
@@ -106,21 +105,9 @@ export default {
     // if (!this.signed) {
     //   this.$router.push('/')
     // }
-    // this.tables = [{
-    //   apiName: 'My Tab 1',
-    //   aid: 'temp-1',
-    //   parameters: '[{"checked":true,"key":"name","value":"Sean","description":"用户名"},{"checked":true,"key":"param","value":"456789","description":"密码"},{"checked":false,"key":"de","value":"王小虎","description":"上海市普陀区金沙江路"}]',
-    //   headers: '[{"checked":true,"key":"Content-Type","value":"multipart/form-data;charset=utf-8","description":"","index":"0"}]',
-    //   body: '{"currentChoice":{"value":"multipart/form-data","label":"formData"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":""}'
-    // }, {
-    //   apiName: 'My Tab 2',
-    //   aid: 'temp-2',
-    //   headers: '[{"checked":true,"key":"Content-Type","value":"application/json;charset=utf-8","description":"","index":"0"}]',
-    //   body: '{"currentChoice":{"value":"application/json","label":"raw"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":"ccccc"}'
-    // }]
     this.tables = [this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
-    console.log(this)
+    // console.log(this)
   }
 }
 </script>
@@ -139,11 +126,6 @@ export default {
     height: 100%;
     width: auto !important;
   }
-  
-  /* .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-  } */
   
   .el-container {
     height: 100%;

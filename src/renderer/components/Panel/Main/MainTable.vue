@@ -5,7 +5,6 @@
       :key="item.aid"
       :name="item.aid">
       <span slot="label"><el-badge :is-dot="item.isDot" class="item"></el-badge>{{item.showApiName}}</span>
-      <!-- {{index}}-{{item.content}} -->
       <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)"></each-table-panel>
     </el-tab-pane>
   </el-tabs>
@@ -62,7 +61,6 @@
       }
     },
     created () {
-      console.log(this.$parent.$parent.$parent.$parent.$refs.aside)
       // console.log('created components MainTable init value', this.tables, this.currentTable)
     }
   }

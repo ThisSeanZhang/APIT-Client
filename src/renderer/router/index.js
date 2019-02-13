@@ -16,11 +16,6 @@ export default new Router({
       component: require('@/components/Panel/Index').default
     },
     {
-      path: '/test',
-      name: 'test',
-      component: require('@/components/Test').default
-    },
-    {
       path: '*',
       redirect: '/'
     }
