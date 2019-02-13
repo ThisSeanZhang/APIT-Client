@@ -11,6 +11,14 @@
 </script>
 
 <style type='text/css' >
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+body { font-family: 'Source Sans Pro', sans-serif; }
+
 html,body,#app{
  height: 100%;
 }
@@ -19,9 +27,9 @@ html,body,#app{
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-    background: #6ec5b7;
+  background: #6ec5b7;
 }
 *::-webkit-scrollbar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
 </style>

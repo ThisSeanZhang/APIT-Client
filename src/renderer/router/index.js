@@ -11,11 +11,6 @@ export default new Router({
       component: require('@/components/Account/Index').default
     },
     {
-      path: '/demo',
-      name: 'landing-page',
-      component: require('@/components/LandingPage').default
-    },
-    {
       path: '/index',
       name: 'index',
       component: require('@/components/Panel/Index').default
