@@ -11,7 +11,7 @@
       @blur="handleInputConfirm"
     ></el-input>
     <el-button v-else class="button-new-tag" size="small" @click="showInput">{{testRequest.apiName}}</el-button>
-    <el-button class="button-save" type="primary" size="small" @click="commitCurrent" icon="el-icon-document">保存</el-button>
+    <el-button v-if="signed" class="button-save" type="primary" size="small" @click="commitCurrent" icon="el-icon-document">保存</el-button>
     <div :class="descriptionDivClass" >
       <el-input
         type="textarea"
@@ -46,14 +46,14 @@
     <response-area v-bind:response="response"></response-area>
 
 
-    <el-button-group slot="append" >
+    <!-- <el-button-group slot="append" >
           <el-button type="primary" @click="checkeUrlStartWithHTTP" icon="el-icon-edit"></el-button>
           <el-button type="primary" icon="el-icon-share"></el-button>
-        </el-button-group>
-    <div>{{item.content}}</div>
+        </el-button-group> -->
+    <!-- <div>{{item.content}}</div>
     <div>{{testRequest}}</div>
     <div>{{requestUrl}}</div>
-    <div>{{saveReqest}}</div>
+    <div>{{saveReqest}}</div> -->
   </div>
 </template>
 <script>
@@ -360,7 +360,7 @@ export default {
         this.item.showApiName = value
       }
     },
-    ...mapState(['developerId', 'defaultProject', 'defaultFolder'])
+    ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed'])
   },
   created () {
     // let params = [{

@@ -3,7 +3,8 @@ const state = {
   developerName: String,
   email: String,
   defaultProject: Number,
-  defaultFolder: Number
+  defaultFolder: Number,
+  signed: false
 }
 
 const mutations = {
@@ -13,6 +14,7 @@ const mutations = {
     state.email = info.email
     state.defaultProject = info.defaultProject
     state.defaultFolder = info.defaultFolder
+    state.signed = info.signed
   }
 }
 
@@ -20,8 +22,19 @@ const actions = {
   setUserInfo ({ commit }, userInfo) {
     // do something async
     if (userInfo) {
-      commit('FLASH_THE_INFO', userInfo)
+      commit('FLASH_THE_INFO', {...userInfo, signed: true})
     }
+  },
+  delUserInfo ({ commit }) {
+    // do something async
+    commit('FLASH_THE_INFO', {
+      developerId: Number,
+      developerName: String,
+      email: String,
+      defaultProject: Number,
+      defaultFolder: Number,
+      signed: false
+    })
   }
 }
 export default {

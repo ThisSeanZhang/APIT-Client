@@ -71,7 +71,7 @@ export default {
             // TODO 登入成功后的相应操作
             this.$message('登入成功o(￣▽￣)ｄ')
             this.setUserInfo(resp.data.data)
-            console.log(this.developerId)
+            this.$emit('login:success')
             loding.close()
           }).catch(error => {
             this.whenErrorMessage(error, () => {

@@ -1,8 +1,13 @@
 <template>
   <el-container>
-    <el-header><wa-header></wa-header></el-header>
+    <el-header>
+      <wa-header 
+        v-on:create:api="pushToTable(currentTableTemplate())"
+        v-on:open:accountPanel="openLoginPanel($event)"
+      ></wa-header>
+    </el-header>
     <el-container>
-      <el-aside>
+      <el-aside v-if="signed">
         <wa-aside 
         ref="aside"
         v-bind:tables="tables"
@@ -19,20 +24,30 @@
       <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
     </el-container>
     <el-footer>Footer</el-footer>
+    <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
+      <div class="loginPanel-body"></div>
+      <account-main v-on:login:success="loginSuccess" ></account-main>
+    </el-dialog>
   </el-container>
 </template>
 <script>
 import WaHeader from './Header/WaHeader'
 import WaAside from './Aside/WaAside1'
 import MainTable from './Main/MainTable'
+import AccountMain from '../Account/AccountMain'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('UserInfo')
+
 export default {
   name: 'index',
-  components: {WaHeader, WaAside, MainTable},
+  components: {WaHeader, WaAside, MainTable, AccountMain},
   data () {
     return {
       tables: [],
       currentTable: null,
-      templateIndex: 0
+      templateIndex: 0,
+      dialogTableVisible: false
     }
   },
   methods: {
@@ -45,6 +60,7 @@ export default {
       this.tables = newTable
       console.log('index uptade tables', this.tables)
       if (this.tables.length === 0) {
+        this.templateIndex = 0
         this.tables.push(this.currentTableTemplate())
       }
     },
@@ -75,9 +91,21 @@ export default {
         headers: '',
         body: '{"currentChoice":{"value":"","label":"none"},"formData":"","rawData":""}'
       }
+    },
+    openLoginPanel (e) {
+      this.dialogTableVisible = e
+    },
+    loginSuccess () {
+      this.dialogTableVisible = false
     }
   },
+  computed: {
+    ...mapState(['signed'])
+  },
   created () {
+    // if (!this.signed) {
+    //   this.$router.push('/')
+    // }
     // this.tables = [{
     //   apiName: 'My Tab 1',
     //   aid: 'temp-1',
@@ -90,18 +118,19 @@ export default {
     //   headers: '[{"checked":true,"key":"Content-Type","value":"application/json;charset=utf-8","description":"","index":"0"}]',
     //   body: '{"currentChoice":{"value":"application/json","label":"raw"},"formData":[{"checked":false,"key":"username","type":"Text","value":"王小虎","description":"名称","index":"0"}],"rawData":"ccccc"}'
     // }]
-    this.tables = [this.currentTableTemplate(), this.currentTableTemplate()]
+    this.tables = [this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
     console.log(this)
   }
 }
 </script>
-<style type='text/css'>
+<style lang="scss" type="text/css" scoped>
   .el-header {
-    background-color: #B3C0D1;
+    /* background-color: #B3C0D1; */
     padding: 0px;
     color: #333;
-    height: 36px;
+    /* height: 36px; */
+    border-bottom: 1px solid #dcdfe6;
   }
   
   .el-aside {
@@ -122,5 +151,12 @@ export default {
 
   .el-footer{
     height: 20px !important;
+  }
+
+  .loginPanel{
+    border-radius: 5px!important;
+    .loginPanel-body{
+      height: 305px;
+    }
   }
 </style>

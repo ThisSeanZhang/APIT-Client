@@ -42,7 +42,7 @@ export default {
       if (data.leaf) {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/apis/' + data.nid
+          url: 'http://localhost:8080/apis/' + data.contain
         }
         ajax(request).then(resp => {
           // TODO 获取成功后的相应操作
@@ -65,32 +65,22 @@ export default {
       if (node.level === 0) {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/projects/content/first-layer',
+          url: 'http://localhost:8080/projects/' + this.project.pid + '/content/first-layer',
           data: {
-            belongProject: this.project.pid,
-            folderOwnerId: this.project.projectOwner
+            ownerId: this.project.projectOwner
           }}
         this.getFolders(node, resolve, request)
       } else {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/folders/content',
+          url: 'http://localhost:8080/nodes/content',
           data: {
             belongProject: this.project.pid,
-            folderOwnerId: this.project.projectOwner,
+            ownerId: this.project.projectOwner,
             parentId: node.data.nid
           }}
         this.getFolders(node, resolve, request)
       }
-      // if (node.data.nid === 2) {
-      //   resolve([{
-      //     label: '二级 1',
-      //     nid: 3,
-      //     leaf: false
-      //   }])
-      // } else {
-      //   this.getFolders(node, resolve)
-      // }
       // console.log(this.data)
     },
     getFolders (node, container, request) {
@@ -130,20 +120,6 @@ export default {
     }
   },
   created () {
-    // console.log('创建了一个Project目录结构')
-    // this.data = [{
-    //   label: '一级 1',
-    //   leaf: false,
-    //   children: [{label: '二级 1-1', children: []}]
-    // }, {
-    //   label: '一级 2',
-    //   leaf: false,
-    //   children: [{label: '二级 2-1', children: []}]
-    // }, {
-    //   label: '一级 3',
-    //   leaf: false,
-    //   children: [{label: '二级 3-1', children: []}]
-    // }]
   }
 }
 </script>
