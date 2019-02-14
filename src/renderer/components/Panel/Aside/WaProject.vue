@@ -74,11 +74,10 @@ export default {
       } else {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/nodes/content',
+          url: 'http://localhost:8080/folders/' + node.data.contain + '/content',
           data: {
             belongProject: this.project.pid,
-            ownerId: this.project.projectOwner,
-            parentId: node.data.nid
+            ownerId: this.project.projectOwner
           }}
         this.getFolders(node, resolve, request)
       }

@@ -335,7 +335,7 @@ export default {
             rawData: this.testRequest.body.rawData
           }),
           apiOwner: this.developerId,
-          belongFolder: this.defaultNode,
+          belongFolder: this.defaultFolder,
           belongProject: this.defaultProject
         }
       }
