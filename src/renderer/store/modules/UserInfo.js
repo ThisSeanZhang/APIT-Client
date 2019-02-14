@@ -4,7 +4,6 @@ const state = {
   email: String,
   defaultProject: Number,
   defaultFolder: Number,
-  defaultNode: Number,
   signed: false
 }
 
@@ -15,7 +14,6 @@ const mutations = {
     state.email = info.email
     state.defaultProject = info.defaultProject
     state.defaultFolder = info.defaultFolder
-    state.defaultNode = info.defaultNode
     state.signed = info.signed
   }
 }
@@ -35,7 +33,6 @@ const actions = {
       email: String,
       defaultProject: Number,
       defaultFolder: Number,
-      defaultNode: Number,
       signed: false
     })
   }

@@ -350,7 +350,7 @@ export default {
         this.item.showApiName = value
       }
     },
-    ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed', 'defaultNode'])
+    ...mapState(['developerId', 'defaultProject', 'defaultFolder', 'signed'])
   },
   created () {
     this.convertToTestRequest(this.item)
