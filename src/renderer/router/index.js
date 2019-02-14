@@ -21,6 +21,11 @@ export default new Router({
       component: require('@/components/Test').default
     },
     {
+      path: '/setting',
+      name: 'setting',
+      component: require('@/components/Setting/WaSetting').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

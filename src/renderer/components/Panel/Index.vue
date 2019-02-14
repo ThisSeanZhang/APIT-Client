@@ -23,7 +23,7 @@
       </el-main>
       <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
     </el-container>
-    <el-footer>Footer</el-footer>
+    <el-footer><wa-footer></wa-footer></el-footer>
     <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
       <div class="loginPanel-body"></div>
       <account-main v-on:login:success="loginSuccess" ></account-main>
@@ -35,13 +35,14 @@ import WaHeader from './Header/WaHeader'
 import WaAside from './Aside/WaAside1'
 import MainTable from './Main/MainTable'
 import AccountMain from '../Account/AccountMain'
+import WaFooter from '../Footer/WaFooter'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('UserInfo')
 
 export default {
   name: 'index',
-  components: {WaHeader, WaAside, MainTable, AccountMain},
+  components: {WaHeader, WaAside, MainTable, AccountMain, WaFooter},
   data () {
     return {
       tables: [],

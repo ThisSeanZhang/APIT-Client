@@ -1,11 +1,6 @@
 import axios from 'axios'
-import * as config from '../config/index.js'
-let _apiHost = config.baseUrl
-// let MINI_TIME = 300
-let TIME_OUT_MAX = 5000
-// let _request = []
 
-axios.defaults.baseURL = _apiHost
+let TIME_OUT_MAX = 5000
 
 let ajax = (option = {url: '', data: {}, isSilence: false, method: 'GET'}) => {
   let _opts = {method: option.method || 'GET', url: option.url}
