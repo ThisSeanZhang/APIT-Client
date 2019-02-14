@@ -1,7 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, session } from 'electron'
-// import '../renderer/store'
+// import store from '../renderer/store'
 
 /**
  * Set `__static` path to static files in production
@@ -51,6 +51,8 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  // 打包后的程序开启开发者侧边栏
+  // mainWindow.webContents.openDevTools()
 }
 
 app.on('ready', createWindow)
