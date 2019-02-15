@@ -46,7 +46,7 @@ export default {
       rules: {
         developerNameOrEmail: [
           { required: true, message: '请输入昵称', trigger: 'blur' },
-          { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' },
+          { min: 1, max: 16, message: '长度在 4 到 16 个字符', trigger: 'blur' },
           {validator: chepass}
         ],
         developerPass: [
