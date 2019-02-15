@@ -95,7 +95,7 @@ export default {
             text: 'Loading',
             background: 'rgba(255, 255, 255, 0.6)'
           })
-          let request = {method: 'GET', url: 'http://localhost:8080/developers/developer-name/' + this.registerForm.developerName}
+          let request = {method: 'GET', url: 'developers/developer-name/' + this.registerForm.developerName}
           ajax(request).then(resp => {
             // console.log(resp)
             this.developerNameExist = true
@@ -114,7 +114,7 @@ export default {
       this.$refs.register_form.validateField('developerName')
     },
     sendRegisterInfo () {
-      let request = {method: 'POST', url: 'http://localhost:8080/developers', data: this.registerForm}
+      let request = {method: 'POST', url: 'developers', data: this.registerForm}
       return ajax(request).then(resp => {
         // console.log(resp)
         this.$message({type: 'success', message: '注册成功[]~(￣▽￣)~*'})

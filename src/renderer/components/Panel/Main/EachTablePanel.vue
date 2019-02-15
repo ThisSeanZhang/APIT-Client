@@ -320,7 +320,7 @@ export default {
       const aid = this.testRequest.aid
       let request = {
         method: isNaN(aid) ? 'POST' : 'PUT',
-        url: 'http://localhost:8080/apis/' + (isNaN(aid) ? '' : aid),
+        url: 'apis/' + (isNaN(aid) ? '' : aid),
         data: {
           aid: isNaN(aid) ? null : aid,
           apiName: this.testRequest.apiName,
