@@ -8,14 +8,16 @@
         <account-main v-on:login:success="loginSuccess" ></account-main>
       </el-main>
     </el-container>
+    <el-footer><wa-footer></wa-footer></el-footer>
   </el-container>
 </template>
 <script>
 import AccountHeader from './AccountHeader'
 import AccountMain from './AccountMain'
+import WaFooter from '../Footer/WaFooter'
 export default {
   name: 'account-index',
-  components: {AccountMain, AccountHeader},
+  components: {AccountMain, AccountHeader, WaFooter},
   methods: {
     loginSuccess () {
       this.$router.push('/index')
@@ -47,6 +49,9 @@ export default {
   }
   .el-container {
     height: 100%;
+  }
+  .el-footer{
+    height: 20px !important;
   }
 </style>
 
