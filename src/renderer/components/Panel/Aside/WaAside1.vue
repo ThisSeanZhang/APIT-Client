@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     findAllProjectByDeveloperId () {
-      let request = {method: 'GET', url: 'http://localhost:8080/projects/owner/' + this.developerId}
+      let request = {method: 'GET', url: 'projects/owner/' + this.developerId}
       this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {
         console.log(resp)

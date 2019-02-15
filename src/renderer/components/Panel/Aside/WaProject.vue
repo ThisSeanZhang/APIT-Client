@@ -42,7 +42,7 @@ export default {
       if (data.leaf) {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/apis/' + data.contain
+          url: 'apis/' + data.contain
         }
         ajax(request).then(resp => {
           // TODO 获取成功后的相应操作
@@ -65,7 +65,7 @@ export default {
       if (node.level === 0) {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/projects/' + this.project.pid + '/content/first-layer',
+          url: 'projects/' + this.project.pid + '/content/first-layer',
           data: {
             ownerId: this.project.projectOwner
           }}
@@ -73,7 +73,7 @@ export default {
       } else {
         let request = {
           method: 'GET',
-          url: 'http://localhost:8080/folders/' + node.data.contain + '/content',
+          url: 'folders/' + node.data.contain + '/content',
           data: {
             belongProject: this.project.pid,
             ownerId: this.project.projectOwner

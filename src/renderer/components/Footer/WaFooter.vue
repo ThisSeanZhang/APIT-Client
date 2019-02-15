@@ -83,8 +83,8 @@ export default {
     const baseUrl = isPro ? 'http://localhost:8080/' : 'https://apit.whileaway.io/'
     if (!this.baseUrl && this.baseUrl === null) {
       this.setBaseUrl(baseUrl)
-      axios.defaults.baseURL = baseUrl
     }
+    axios.defaults.baseURL = this.baseUrl
     console.log('baseUrl', baseUrl)
     console.log('store', this.baseUrl)
     console.log('axios.defaults.baseURL', axios.defaults.baseURL)

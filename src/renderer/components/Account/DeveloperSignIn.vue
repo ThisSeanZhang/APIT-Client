@@ -65,7 +65,7 @@ export default {
             text: 'Loading',
             background: 'rgba(255, 255, 255, 0.6)'
           })
-          let request = {method: 'POST', url: 'http://localhost:8080/session', data: this.loginform}
+          let request = {method: 'POST', url: 'session', data: this.loginform}
           ajax(request).then(resp => {
             console.log(resp)
             // TODO 登入成功后的相应操作
