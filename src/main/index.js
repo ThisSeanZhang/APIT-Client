@@ -52,7 +52,7 @@ function createWindow () {
     mainWindow = null
   })
   // 打包后的程序开启开发者侧边栏
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 app.on('ready', createWindow)
