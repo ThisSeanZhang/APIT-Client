@@ -23,7 +23,7 @@
   },
   "build": {
     "productName": "APIT",
-    "appId": "io.whileaway.apitest",
+    "appId": "io.whileaway.apit",
     "directories": {
       "output": "build"
     },
