@@ -49,7 +49,15 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": true
     },
     "linux": {
       "icon": "build/icons"
