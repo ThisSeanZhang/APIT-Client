@@ -73,12 +73,12 @@ export default {
         ],
         developerPass: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { message: '长度在1到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9=]{6,16}$/, trigger: 'blur' },
+          { message: '长度在6到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9=]{6,16}$/, trigger: 'blur' },
           {validator: validatePass, trigger: 'blur'}
         ],
         confirmPass: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { message: '长度在1到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9]{6,16}$/, trigger: 'blur' },
+          { message: '长度在6到16个字符,只允许出现_-=!@#以及数字和字母', pattern: /^[a-zA-Z_\-!@#0-9]{6,16}$/, trigger: 'blur' },
           {validator: validatePass2, trigger: 'blur'}
         ],
         email: [
