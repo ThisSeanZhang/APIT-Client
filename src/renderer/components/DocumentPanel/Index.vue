@@ -64,7 +64,7 @@ export default {
   }
 
   .el-footer{
-    height: 20px !important;
+    height: 21px !important;
   }
 
   .loginPanel{

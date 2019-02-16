@@ -106,15 +106,19 @@ export default {
       margin: 4px;
     }
   .setting-btn {
+    padding-top: 2px;
+    margin-left: 5px;
     color: #f56c6c;
   }
   .about-btn {
+    padding-top: 2px;
     margin-left: 5px;
     color: #66b1ff;
   }
   .row-bg {
+    border-top: 1px solid #dcdfe6;
     height: 20px;
-    background-color: #f9fafc;
+    // background-color: #f9fafc;
   }
   .setting-popover {
     font-size: 18px;
@@ -128,7 +132,7 @@ export default {
 <style  lang="scss" type="text/css">
   .model-choice{
     .el-radio-button__inner{
-      padding: 3px 15px;
+      padding: 3px 13px;
     }
   }
 </style>
