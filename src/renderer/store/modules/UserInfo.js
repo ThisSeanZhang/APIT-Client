@@ -1,9 +1,9 @@
 const state = {
-  developerId: Number,
-  developerName: String,
-  email: String,
-  defaultProject: Number,
-  defaultFolder: Number,
+  developerId: null,
+  developerName: null,
+  email: null,
+  defaultProject: null,
+  defaultFolder: null,
   signed: false
 }
 
@@ -28,11 +28,11 @@ const actions = {
   delUserInfo ({ commit }) {
     // do something async
     commit('FLASH_THE_INFO', {
-      developerId: Number,
-      developerName: String,
-      email: String,
-      defaultProject: Number,
-      defaultFolder: Number,
+      developerId: null,
+      developerName: null,
+      email: null,
+      defaultProject: null,
+      defaultFolder: null,
       signed: false
     })
   }

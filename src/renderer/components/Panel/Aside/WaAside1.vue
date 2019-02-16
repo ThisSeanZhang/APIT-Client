@@ -33,6 +33,11 @@ export default {
   },
   methods: {
     findAllProjectByDeveloperId () {
+      if (this.developerId === null) {
+        this.obtionStatus = this.requestStatus.REQUEST_ERROR
+        this.$message.warning('还没有登入欸(●ˇ∀ˇ●)')
+        return null
+      }
       let request = {method: 'GET', url: 'projects/owner/' + this.developerId}
       this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {

@@ -14,7 +14,7 @@
         v-on:pushToTable="pushToTable($event)"></wa-aside>
       </el-aside>
       <el-main>
-        <main-table 
+        <main-table
         v-on:flash:projectTree="flashProjectTree"
         v-on:close:table="colseTable($event)"
         v-bind:tables="tables"
@@ -23,7 +23,7 @@
       </el-main>
       <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
     </el-container>
-    <el-footer><wa-footer></wa-footer></el-footer>
+    <!-- <el-footer><wa-footer v-on:change:currentBar="changeCurrentPanel($event)" v-bind:changeBar="panelChangeBar"></wa-footer></el-footer> -->
     <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
       <div class="loginPanel-body"></div>
       <account-main v-on:login:success="loginSuccess" ></account-main>
@@ -48,7 +48,8 @@ export default {
       tables: [],
       currentTable: null,
       templateIndex: 0,
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] }
     }
   },
   methods: {
@@ -98,6 +99,10 @@ export default {
     },
     loginSuccess () {
       this.dialogTableVisible = false
+    },
+    changeCurrentPanel (value) {
+      this.panelChangeBar.current = value
+      console.log('currentChange', value)
     }
   },
   computed: {

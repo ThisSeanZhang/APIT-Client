@@ -15,7 +15,12 @@
         </el-popover>
         <i class="el-icon-info about-btn" style="font-size: 14px;" @click="infoDialogVisible = true"></i>
       </el-col>
-      <el-col :span="6"><div  class="grid-content bg-purple"></div></el-col>
+      <el-col :span="6">
+        <el-radio-group v-model="current" size="mini"  v-if="changeBar.current !== '' && signed" @change="changeBarhandel">
+          <el-radio-button v-for="r in changeBar.allType" :key="r.label" class="model-choice" :label="r.label">{{r.value}}</el-radio-button>
+        </el-radio-group>
+        {{current}}
+      </el-col>
     </el-row>
     <el-dialog
       title="关于"
@@ -32,19 +37,30 @@
 <script>
 import SoftInfo from './SoftInfo'
 import { ajax } from '../../api/fetch'
-import axios from 'axios'
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('Setting')
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'wa-footer',
+  props: {
+    changeBar: {
+      type: Object,
+      default: function () { return { current: '', allType: [{label: '', value: ''}] } },
+      validator: function (value) {
+        return value.allType.filter(t => t.label === value.current).length > 0
+      }
+    }
+  },
   components: {SoftInfo},
   data () {
     return {
-      infoDialogVisible: false
+      infoDialogVisible: false,
+      current: ''
     }
   },
   methods: {
+    changeBarhandel (value) {
+      this.$emit('change:currentBar', value)
+    },
     checkConnection () {
       let request = {
         method: 'GET',
@@ -64,7 +80,8 @@ export default {
         })
       })
     },
-    ...mapActions(['setBaseUrl'])
+    ...mapActions('Setting', ['setBaseUrl']),
+    ...mapActions('UserInfo', ['setUserInfo'])
   },
   computed: {
     url: {
@@ -76,18 +93,11 @@ export default {
         this.setBaseUrl(url)
       }
     },
-    ...mapState(['baseUrl'])
+    ...mapState('Setting', ['baseUrl']),
+    ...mapState('UserInfo', ['signed'])
   },
   created () {
-    const isPro = Object.is(process.env.NODE_ENV, 'development')
-    const baseUrl = isPro ? 'http://localhost:8080/' : 'https://apit.whileaway.io/'
-    if (!this.baseUrl && this.baseUrl === null) {
-      this.setBaseUrl(baseUrl)
-    }
-    axios.defaults.baseURL = this.baseUrl
-    console.log('baseUrl', baseUrl)
-    console.log('store', this.baseUrl)
-    console.log('axios.defaults.baseURL', axios.defaults.baseURL)
+    this.current = this.changeBar.current
   }
 }
 </script>
@@ -102,15 +112,6 @@ export default {
     margin-left: 5px;
     color: #66b1ff;
   }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
   .row-bg {
     height: 20px;
     background-color: #f9fafc;
@@ -120,6 +121,14 @@ export default {
     .title {
       color: #3a8ee6;
       font-size: 12px;
+    }
+  }
+
+</style>
+<style  lang="scss" type="text/css">
+  .model-choice{
+    .el-radio-button__inner{
+      padding: 3px 15px;
     }
   }
 </style>

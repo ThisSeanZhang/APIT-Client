@@ -141,7 +141,7 @@ export default {
   .test{
     position: absolute;
     top: 0px;
-    padding: 15px;
+    padding: 15px 10px 15px 6px;
     i{
       position: inherit;
     }
@@ -155,7 +155,7 @@ export default {
   .project_title{
     position: absolute;
     top: 0px;
-    padding: 10px 0px 10px 40px;
+    padding: 10px 0px 10px 24px;
   }
   .project_header{
     cursor: pointer;

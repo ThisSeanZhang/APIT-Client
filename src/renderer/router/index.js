@@ -13,7 +13,7 @@ export default new Router({
     {
       path: '/index',
       name: 'index',
-      component: require('@/components/Panel/Index').default
+      component: require('@/components/PanelPage').default
     },
     {
       path: '/test',
