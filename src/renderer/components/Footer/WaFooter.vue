@@ -19,7 +19,7 @@
         <el-radio-group v-model="current" size="mini"  v-if="changeBar.current !== '' && signed" @change="changeBarhandel">
           <el-radio-button v-for="r in changeBar.allType" :key="r.label" class="model-choice" :label="r.label">{{r.value}}</el-radio-button>
         </el-radio-group>
-        {{current}}
+        <!-- {{current}} -->
       </el-col>
     </el-row>
     <el-dialog
