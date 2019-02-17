@@ -3,11 +3,10 @@
     <el-aside>
       <wa-aside 
       ref="aside"
-      v-bind:tables="tables"
       v-on:pushToTable="pushToTable($event)"></wa-aside>
     </el-aside>
     <el-main>
-      <document-page></document-page>
+      <document-page v-bind:apiId="currentApiId"></document-page>
     </el-main>
     <!-- <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
       <div class="loginPanel-body"></div>
@@ -26,23 +25,17 @@ export default {
   components: {WaHeader, WaAside, AccountMain, DocumentPage},
   data () {
     return {
-      tables: [],
       currentTable: null,
       templateIndex: 0,
       dialogTableVisible: false,
-      panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] }
+      panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] },
+      currentApiId: null
     }
   },
   methods: {
     pushToTable (table) {
-      table.aid = table.aid.toString()
-      if (this.tables.filter(t => t.aid === table.aid).length === 0) {
-        table.isDot = false
-        table.showApiName = table.apiName
-        this.tables.push(table)
-      }
-      this.currentTable = table.aid
-      console.log(this.currentTable)
+      console.log('Document-PANEL', table.aid)
+      this.currentApiId = table.aid
     }
   }
 }

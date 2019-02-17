@@ -1,7 +1,9 @@
 <template>
   <el-container>
-    <develop-panel v-if="panelChangeBar.current === 'dev'"></develop-panel>
-    <document-panel v-if="panelChangeBar.current === 'doc'"></document-panel>
+    <keep-alive>
+      <develop-panel v-if="panelChangeBar.current === 'dev'"></develop-panel>
+      <document-panel v-if="panelChangeBar.current === 'doc'"></document-panel>
+    </keep-alive>
     <el-footer><wa-footer v-on:change:currentBar="changeCurrentPanel($event)" v-bind:changeBar="panelChangeBar"></wa-footer></el-footer>
   </el-container>
 </template>
