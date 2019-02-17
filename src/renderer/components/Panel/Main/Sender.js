@@ -34,6 +34,9 @@ export default (option = {url: '', data: {}, headers: [], method: 'GET'}) => {
       ))
     }
 
+    if (option.method.toUpperCase() === 'GET') {
+      option.headers = option.headers.filter(h => h.key !== 'Content-Type')
+    }
     option.headers.forEach(head => {
       xmlhttp.setRequestHeader(head.key, head.value)
     })
