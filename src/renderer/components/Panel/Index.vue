@@ -21,9 +21,7 @@
         v-model="currentTable"
         v-on:updateTable="updateTable($event)"></main-table>
       </el-main>
-      <!-- <el-main><main-table v-on:updateTable="updateTable($event)"  v-bind:tables="tables"></main-table></el-main> -->
     </el-container>
-    <!-- <el-footer><wa-footer v-on:change:currentBar="changeCurrentPanel($event)" v-bind:changeBar="panelChangeBar"></wa-footer></el-footer> -->
     <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
       <div class="loginPanel-body"></div>
       <account-main v-on:login:success="loginSuccess" ></account-main>
@@ -48,8 +46,7 @@ export default {
       tables: [],
       currentTable: null,
       templateIndex: 0,
-      dialogTableVisible: false,
-      panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] }
+      dialogTableVisible: false
     }
   },
   methods: {
@@ -68,11 +65,15 @@ export default {
     },
     pushToTable (table) {
       table.aid = table.aid.toString()
-      if (this.tables.filter(t => t.aid === table.aid).length === 0) {
-        table.isDot = false
-        table.showApiName = table.apiName
-        this.tables.push(table)
-      }
+      this.tables = this.tables.filter(t => t.aid !== table.aid)
+      table.isDot = false
+      table.showApiName = table.apiName
+      this.tables.push(table)
+      // if (this.tables.filter(t => t.aid === table.aid).length === 0) {
+      //   table.isDot = false
+      //   table.showApiName = table.apiName
+      //   this.tables.push(table)
+      // }
       this.currentTable = table.aid
       console.log(this.currentTable)
     },
@@ -99,10 +100,6 @@ export default {
     },
     loginSuccess () {
       this.dialogTableVisible = false
-    },
-    changeCurrentPanel (value) {
-      this.panelChangeBar.current = value
-      console.log('currentChange', value)
     }
   },
   computed: {
