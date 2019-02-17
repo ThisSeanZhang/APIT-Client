@@ -132,7 +132,7 @@ export default {
 <style  lang="scss" type="text/css">
   .model-choice{
     .el-radio-button__inner{
-      padding: 3px 13px;
+      padding: 2px 13px;
     }
   }
 </style>
