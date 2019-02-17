@@ -16,7 +16,7 @@ export default {
   components: {WaFooter, DevelopPanel, DocumentPanel},
   data () {
     return {
-      panelChangeBar: { current: 'doc', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] }
+      panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] }
     }
   },
   methods: {
