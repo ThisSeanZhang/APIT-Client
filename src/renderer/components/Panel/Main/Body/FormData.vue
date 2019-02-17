@@ -84,10 +84,10 @@ export default {
     addParam () {
       this.formData.push({
         checked: true,
-        key: 'username',
+        key: '',
         type: 'Text',
-        value: '王小虎',
-        description: '名称',
+        value: '',
+        description: '',
         index: this.formData.length.toString()
       })
     },

@@ -89,7 +89,7 @@ export default {
         method: 'GET',
         bewrite: '',
         url: '',
-        parameters: 'true<a_p>name<a_p><a_p>用户名<a_o>true<a_p>param<a_p>456789<a_p><a_o>false<a_p>de<a_p>王小虎<a_p>上海市普陀区金沙江路',
+        parameters: '',
         headers: '',
         body: '{"currentChoice":{"value":"","label":"none"},"formData":"","rawData":""}'
       }
