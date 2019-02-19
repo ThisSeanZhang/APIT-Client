@@ -336,7 +336,7 @@ export default {
       const aid = this.testRequest.aid
       let request = {
         method: isNaN(aid) ? 'POST' : 'PUT',
-        url: 'apis/' + (isNaN(aid) ? '' : aid),
+        url: 'projects/' + this.defaultFolder + '/apis/' + (isNaN(aid) ? '' : aid),
         data: {
           aid: isNaN(aid) ? null : aid,
           apiName: this.testRequest.apiName,

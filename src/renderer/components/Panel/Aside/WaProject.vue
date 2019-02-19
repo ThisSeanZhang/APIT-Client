@@ -42,7 +42,7 @@ export default {
       if (data.leaf) {
         let request = {
           method: 'GET',
-          url: 'apis/' + data.contain
+          url: 'projects/' + this.project.pid + '/apis/' + data.contain
         }
         ajax(request).then(resp => {
           // TODO 获取成功后的相应操作
@@ -73,7 +73,7 @@ export default {
       } else {
         let request = {
           method: 'GET',
-          url: 'folders/' + node.data.contain + '/content',
+          url: 'projects/' + this.project.pid + '/folders/' + node.data.contain + '/content',
           data: {
             belongProject: this.project.pid,
             ownerId: this.project.projectOwner
