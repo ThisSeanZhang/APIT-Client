@@ -148,7 +148,7 @@ export default {
         this.removeNode(node, data, target)
       }).catch(error => {
         console.log(error)
-        this.$message('删除失败了')
+        this.$message('删除失败了_(:з)∠)_，再试一次吧')
       })
     },
     removeNode (node, data, target) {
@@ -156,6 +156,7 @@ export default {
       if (target.label === 'api') {
         this.$emit('del:api', target.id)
       } else if (target.label === 'folder') {
+        this.$emit('del:folder', target.id)
         console.log('folder id', target.id)
       }
       console.log(node, data)
