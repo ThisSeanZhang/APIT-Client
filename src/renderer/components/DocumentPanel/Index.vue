@@ -6,7 +6,7 @@
       v-on:pushToTable="pushToTable($event)"></wa-aside>
     </el-aside>
     <el-main>
-      <document-page v-bind:apiId="currentApiId"></document-page>
+      <document-page v-bind:apiId="currentApiId" v-bind:projectId="currentProjectId"></document-page>
     </el-main>
     <!-- <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
       <div class="loginPanel-body"></div>
@@ -29,13 +29,15 @@ export default {
       templateIndex: 0,
       dialogTableVisible: false,
       panelChangeBar: { current: 'dev', allType: [{label: 'dev', value: '开发面板'}, {label: 'doc', value: '文档面板'}] },
-      currentApiId: null
+      currentApiId: null,
+      currentProjectId: null
     }
   },
   methods: {
     pushToTable (table) {
       console.log('Document-PANEL', table.aid)
       this.currentApiId = table.aid
+      this.currentProjectId = table.belongProject
     }
   }
 }

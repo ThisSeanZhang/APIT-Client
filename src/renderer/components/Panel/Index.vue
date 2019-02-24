@@ -2,6 +2,7 @@
   <el-container>
     <el-header>
       <wa-header 
+        v-on:update:list="flashProjectTree"
         v-on:create:api="pushToTable(currentTableTemplate())"
         v-on:open:accountPanel="openLoginPanel($event)"
       ></wa-header>
@@ -11,7 +12,8 @@
         <wa-aside 
         ref="aside"
         v-bind:tables="tables"
-        v-on:pushToTable="pushToTable($event)"></wa-aside>
+        v-on:pushToTable="pushToTable($event)"
+        v-on:removeTableByAId="removeTableByAId($event)"></wa-aside>
       </el-aside>
       <el-main>
         <main-table
@@ -54,6 +56,15 @@ export default {
       console.log('want remove targetName:', target)
       this.tables = this.tables.filter(tb => tb.aid !== target.remove)
       this.pushToTable(target.append)
+    },
+    removeTableByAId (aid) {
+      console.log('want remove target aid:', aid)
+      this.tables = this.tables.filter(tb => tb.aid !== aid)
+      if (this.tables.length === 0) {
+        this.templateIndex = 0
+        this.tables.push(this.currentTableTemplate())
+      }
+      this.currentTable = this.tables[this.tables.length - 1].aid
     },
     updateTable (newTable) {
       this.tables = newTable

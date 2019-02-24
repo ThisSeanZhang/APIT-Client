@@ -15,15 +15,40 @@
       :load="loadFolders" 
       :props="defaultProps"
       ref="project_tree"
-      @node-click="handleNodeClick"></el-tree>
+      @node-click="handleNodeClick">
+        <span class="custom-tree-node" slot-scope="{ node, data }">
+          <span>{{ node.label }}</span>
+          <span>
+            <!-- <el-button v-if="!node.isLeaf"
+              type="text"
+              size="mini"
+              @click="() => append(data)">
+              Info
+            </el-button> -->
+            <folder-info-panel v-on:update:list="$emit('update:list')" v-bind:nid="data.nid" v-bind:pid="data.belongProject" v-if="!node.isLeaf" ></folder-info-panel>
+            <!-- <el-popover placement="top" width="160" v-model="visible2">
+              <p>确定删除吗？</p>
+              <div style="text-align: right; margin: 0">
+                <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
+                <el-button type="primary" size="mini" @click.stop="() => {remove(node, data); visible2 = false}">确定</el-button>
+              </div>
+              <el-button type="text" size="mini" @click.stop class="delete-text" slot="reference">删除</el-button>
+            </el-popover> -->
+            <delete-popover v-on:confirm:del="() => remove(node, data)" ></delete-popover>
+          </span>
+        </span>
+      </el-tree>
     </div>
   </div>
 </template>
 <script>
 import {ajax} from '../../../api/fetch'
+import DeletePopover from './DeletePopover'
+import FolderInfoPanel from './FolderInfoPanel'
 export default {
   name: 'wa-project',
   props: ['project'],
+  components: {DeletePopover, FolderInfoPanel},
   data () {
     return {
       data: [],
@@ -108,6 +133,36 @@ export default {
     },
     editProject () {
       // console.log('编辑')
+    },
+    remove (node, data) {
+      const list = data.nid.split('-')
+      const target = { label: list[0], id: list[1] }
+      let request = {
+        method: 'DELETE',
+        url: 'projects/' + this.project.pid + '/' + target.label + 's/' + data.contain
+      }
+      ajax(request).then(resp => {
+        // console.log(resp)
+        // TODO 登入成功后的相应操作
+        // container(resp.data.data)
+        this.removeNode(node, data, target)
+      }).catch(error => {
+        console.log(error)
+        this.$message('删除失败了')
+      })
+    },
+    removeNode (node, data, target) {
+      console.log('aid = ' + target.id)
+      if (target.label === 'api') {
+        this.$emit('del:api', target.id)
+      } else if (target.label === 'folder') {
+        console.log('folder id', target.id)
+      }
+      console.log(node, data)
+      const parent = node.parent
+      const children = parent.childNodes
+      const index = children.findIndex(d => d.id === data.id)
+      children.splice(index, 1)
     }
   },
   computed: {
@@ -163,5 +218,14 @@ export default {
     height: 42px;
   }
 }
+.custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
+  
 </style>
 

@@ -65,7 +65,7 @@
 import { ajax } from '../../api/fetch'
 export default {
   name: 'document-page',
-  props: ['apiId'],
+  props: ['apiId', 'projectId'],
   data () {
     return {
       testRequest: {
@@ -96,7 +96,7 @@ export default {
     fetchApiInfo () {
       let request = {
         method: 'GET',
-        url: '/apis/' + this.apiId
+        url: 'projects/' + this.projectId + '/apis/' + this.apiId
       }
       const h = this.$createElement
       ajax(request).then(resp => {

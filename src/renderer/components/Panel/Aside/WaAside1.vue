@@ -9,7 +9,16 @@
           请求失败了_(:з)∠)_,<el-button @click.stop="findAllProjectByDeveloperId" type="text">再试试</el-button>吧
         </div>
       </div>
-      <wa-project ref="projects" v-on:get:api="$emit('pushToTable', $event.data)" v-else v-for="project in projects" :key="project.pid" v-bind:project="project"></wa-project>
+      <wa-project 
+        ref="projects" 
+        v-on:get:api="$emit('pushToTable', $event.data)" 
+        v-on:del:api="$emit('removeTableByAId', $event)" 
+        v-on:update:list="reflash"
+        v-else 
+        v-for="project in projects" 
+        :key="project.pid" 
+        v-bind:project="project">
+      </wa-project>
     </div>
     <div class="dividing_line"></div>
   </div>

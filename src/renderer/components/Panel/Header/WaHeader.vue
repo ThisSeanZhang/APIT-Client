@@ -18,10 +18,10 @@
   </el-menu> -->
   <el-row type="flex" :gutter="20" justify="space-around" style="margin-top: 1%;">
     <el-col :span="4">
-      <el-button @click="handleCommand(createWhat.API)" type="primary">
+      <!-- <el-button @click="handleCommand(createWhat.API)" type="primary">
         <i class="el-icon-plus"></i>新建个API
-      </el-button>
-      <!-- <el-dropdown  @command="handleCommand" trigger="click">
+      </el-button> -->
+      <el-dropdown  @command="handleCommand" trigger="click">
         <el-button type="primary">
           新建些什么呢<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
@@ -30,20 +30,23 @@
           <el-dropdown-item :command='createWhat.FOLDER' class="el-icon-document">&nbsp;文件夹 &nbsp; </el-dropdown-item>
           <el-dropdown-item :command='createWhat.PROJECT' class="el-icon-date">&nbsp;项目 &nbsp;</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown> -->
+      </el-dropdown>
     </el-col>
     <el-col :span="15">
+      <create-folder v-model="folderDialogVisible"></create-folder>
     </el-col>
     <el-col :span="4"><info-panel v-on:open:accountPanel="openLoginPanel" ></info-panel></el-col>
   </el-row>
 </template>
 <script>
 import InfoPanel from './InfoPanel'
+import CreateFolder from './CreateFolder'
 export default {
   name: 'wa-header',
-  components: {InfoPanel},
+  components: {InfoPanel, CreateFolder},
   data () {
     return {
+      folderDialogVisible: false,
       createWhat: {API: 'API', FOLDER: 'FOLDER', PROJECT: 'PROJECT'}
     }
   },
@@ -54,7 +57,7 @@ export default {
     handleCommand (command) {
       var action = {
         'API': () => { this.$emit('create:api', 'ccc') },
-        'FOLDER': () => { this.$message('暂未编写') },
+        'FOLDER': () => { this.folderDialogVisible = true },
         'PROJECT': () => { this.$message('暂未编写') }
       }
       return action[command]()
