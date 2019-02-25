@@ -38,7 +38,13 @@ export default {
       console.log('Document-PANEL', table.aid)
       this.currentApiId = table.aid
       this.currentProjectId = table.belongProject
+    },
+    flashProjectTree () {
+      this.$refs.aside.reflash()
     }
+  },
+  activated () {
+    this.flashProjectTree()
   }
 }
 </script>

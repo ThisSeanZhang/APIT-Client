@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <wa-header 
-        v-on:update:list="flashProjectTree"
+        v-on:flash:projectTree="flashProjectTree"
         v-on:create:api="pushToTable(currentTableTemplate())"
         v-on:open:accountPanel="openLoginPanel($event)"
       ></wa-header>
@@ -11,7 +11,7 @@
       <el-aside v-if="signed">
         <wa-aside 
         ref="aside"
-        v-bind:tables="tables"
+        v-bind:show_modify="true"
         v-on:pushToTable="pushToTable($event)"
         v-on:removeTableByAId="removeTableByAId($event)"></wa-aside>
       </el-aside>
@@ -135,6 +135,9 @@ export default {
     this.tables = [this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
     console.log(this)
+  },
+  activated () {
+    this.flashProjectTree()
   }
 }
 </script>

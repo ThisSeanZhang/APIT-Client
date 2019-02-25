@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="apiId === null"></div>
+    
+    <div v-if="testRequest.aid === null">
+      点击左侧选择新的API<el-butten v-if="apiId !== null" type="text" @click.stop="fetchApiInfo()">,或者刷新</el-butten>试试
+    </div>
     <div v-else class="doc-api">
       <div class="doc-api-header">
         <span>{{testRequest.method}}</span>
@@ -105,8 +108,9 @@ export default {
         console.log(error)
         this.$notify({
           title: '获取相应的API信息',
-          message: h('i', { style: 'color: #f56c6c' }, '失败了〒▽〒')
+          message: h('i', { style: 'color: #f56c6c' }, '失败了〒▽〒,页面上的信息可能已经失效')
         })
+        this.initTestRequest()
       })
     },
     convertToTestRequest (item) {
@@ -146,6 +150,25 @@ export default {
         // return {checked: (info[0] === 'true'), key: info[1], value: info[2], description: info[3]}
         return doWhat(e.split('<a_p>'))
       })
+    },
+    initTestRequest () {
+      this.testRequest = {
+        aid: null,
+        apiName: '',
+        method: '',
+        bewrite: '',
+        url: '',
+        parameters: [],
+        headers: [],
+        body: {
+          currentChoice: {
+            label: 'none',
+            value: ''
+          },
+          formData: [],
+          rawData: ''
+        }
+      }
     }
   },
   created () {

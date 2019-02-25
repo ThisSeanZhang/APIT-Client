@@ -17,7 +17,8 @@
         v-else 
         v-for="project in projects" 
         :key="project.pid" 
-        v-bind:project="project">
+        v-bind:project="project"
+        v-bind:show_modify="show_modify">
       </wa-project>
     </div>
     <div class="dividing_line"></div>
@@ -32,6 +33,12 @@ const { mapState } = createNamespacedHelpers('UserInfo')
 
 export default {
   name: 'wa-aside1',
+  props: {
+    show_modify: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {WaProject},
   data () {
     return {
@@ -92,19 +99,6 @@ export default {
   created () {
     this.obtionStatus = this.requestStatus.FETCHING
     this.findAllProjectByDeveloperId()
-    // this.projects = [{
-    //   pid: 1,
-    //   projectName: 'OTMS期末项目',
-    //   projectOwner: 1
-    // }, {
-    //   pid: 2,
-    //   projectName: 'TMS-115项目',
-    //   projectOwner: 1
-    // }, {
-    //   pid: 3,
-    //   projectName: 'APIT毕设',
-    //   projectOwner: 1
-    // }]
   }
 }
 </script>

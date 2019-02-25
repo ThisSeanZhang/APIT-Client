@@ -33,7 +33,7 @@
       </el-dropdown>
     </el-col>
     <el-col :span="15">
-      <create-folder v-model="folderDialogVisible"></create-folder>
+      <create-folder v-on:flash:projectTree="$emit('flash:projectTree')" v-model="folderDialogVisible"></create-folder>
     </el-col>
     <el-col :span="4"><info-panel v-on:open:accountPanel="openLoginPanel" ></info-panel></el-col>
   </el-row>

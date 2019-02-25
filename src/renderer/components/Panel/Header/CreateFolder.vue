@@ -110,11 +110,10 @@ export default {
         url: 'projects/' + this.folderForm.belongProject + '/folders',
         data: this.requestFolder}
       ajax(request).then(resp => {
-        // TODO 登入成功后的相应操作
         this.$message.success('[]~(￣▽￣)~*添加成功')
         this.dialogVisible = false
         this.cleanFolderFrom()
-        this.$emit('update:list')
+        this.$emit('flash:projectTree')
       }).catch(error => {
         this.whenErrorMessage(error)
       })

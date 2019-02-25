@@ -3,7 +3,7 @@
     <div class="project_header" @click="openTheProject()">
       <span class="test"><i :class="iconClass"></i></span>
       <span class="project_title">{{project.projectName}}</span>
-      <span class="edit"  >
+      <span class="edit" v-if="show_modify" >
         <i @click.stop="editProject" class="el-icon-edit-outline"></i></span>
     </div>
     <div>
@@ -12,13 +12,14 @@
       lazy 
       node-key="nid"
       :data="data" 
+      :indent = "5"
       :load="loadFolders" 
       :props="defaultProps"
       ref="project_tree"
       @node-click="handleNodeClick">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <span>{{ node.label }}</span>
-          <span>
+          <span v-if="show_modify">
             <!-- <el-button v-if="!node.isLeaf"
               type="text"
               size="mini"
@@ -47,7 +48,7 @@ import DeletePopover from './DeletePopover'
 import FolderInfoPanel from './FolderInfoPanel'
 export default {
   name: 'wa-project',
-  props: ['project'],
+  props: ['project', 'show_modify'],
   components: {DeletePopover, FolderInfoPanel},
   data () {
     return {
@@ -162,7 +163,7 @@ export default {
       console.log(node, data)
       const parent = node.parent
       const children = parent.childNodes
-      const index = children.findIndex(d => d.id === data.id)
+      const index = children.findIndex(d => d.key === data.nid)
       children.splice(index, 1)
     }
   },
