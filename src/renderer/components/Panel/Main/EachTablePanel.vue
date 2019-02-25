@@ -53,6 +53,8 @@
     <div>{{testRequest}}</div>
     <div>{{requestUrl}}</div>
     <div>{{saveReqest}}</div> -->
+    <select-save-place v-model="showSavePlace"
+      v-on:update:api:belong="updateBelong($event)" ></select-save-place>
   </div>
 </template>
 <script>
@@ -61,6 +63,7 @@ import RequestParam from './RequestParam-2'
 import RequestHeaders from './RequestHeaders'
 import RequestBody from './RequestBody'
 import ResponseArea from './ResponseArea'
+import SelectSavePlace from './SelectSavePlace'
 import {ajax} from '../../../api/fetch'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -69,7 +72,7 @@ const { mapState } = createNamespacedHelpers('UserInfo')
 export default {
   name: 'each-table-panel',
   props: ['item'],
-  components: {RequestParam, RequestHeaders, RequestBody, ResponseArea},
+  components: {SelectSavePlace, RequestParam, RequestHeaders, RequestBody, ResponseArea},
   watch: {
     testRequest: {
       handler: function (val, oldVal) {
@@ -82,6 +85,7 @@ export default {
   },
   data () {
     return {
+      showSavePlace: false,
       isSending: false,
       changedName: false,
       panelLodong: false,
@@ -104,7 +108,10 @@ export default {
           },
           formData: [],
           rawData: ''
-        }
+        },
+        apiOwner: null,
+        belongFolder: null,
+        belongProject: null
       },
       response: null
     }
@@ -138,7 +145,23 @@ export default {
     showDescription () {
       this.descriptionIsOpen = !this.descriptionIsOpen
     },
+    updateBelong (target) {
+      this.testRequest.belongFolder = target.fid
+      this.testRequest.belongProject = target.pid
+      console.log('设置了所属的文件加和项目:', this.testRequest)
+    },
+    checkCommitCurrent () {
+      if (this.testRequest.belongProject === null) {
+        this.showSavePlace = true
+        this.$message('需要选择存放的文件加哦')
+        return false
+      }
+      return true
+    },
     commitCurrent () {
+      if (!this.checkCommitCurrent()) {
+        return
+      }
       this.panelLodong = true
       ajax(this.saveReqest).then(resp => {
         // console.log(resp)
@@ -148,7 +171,7 @@ export default {
         this.panelLodong = false
       }).catch(error => {
         this.whenErrorMessage(error, () => {
-          this.$message.warning('还没有项目欸(●ˇ∀ˇ●)')
+          this.showSavePlace = true
         })
       })
     },
@@ -248,9 +271,9 @@ export default {
       this.testRequest.body.rawData = body.rawData ? body.rawData : ''
       // console.log(body.currentChoice)
       this.testRequest.body.currentChoice = body.currentChoice
-      this.testRequest.apiOwner = item.apiOwner
-      this.testRequest.belongFolder = item.belongFolder
-      this.testRequest.belongProject = item.belongProject
+      this.testRequest.apiOwner = item.apiOwner ? item.apiOwner : this.developerId
+      this.testRequest.belongFolder = item.belongFolder ? item.belongFolder : null
+      this.testRequest.belongProject = item.belongProject ? item.belongProject : null
       // console.log('加载完的testRequest', this.testRequest)
     },
     whenErrorMessage (error, dowhat) {
@@ -350,9 +373,9 @@ export default {
             formData: this.convertToStr(this.testRequest.body.formData, e => [e.checked, e.key, e.type, e.type === 'Text' ? e.value : '', e.description]),
             rawData: this.testRequest.body.rawData
           }),
-          apiOwner: this.developerId,
-          belongFolder: this.defaultFolder,
-          belongProject: this.defaultProject
+          apiOwner: this.testRequest.apiOwner ? this.testRequest.apiOwner : this.developerId,
+          belongFolder: this.testRequest.belongFolder ? this.testRequest.belongFolder : this.defaultFolder,
+          belongProject: this.testRequest.belongProject ? this.testRequest.belongProject : this.defaultProject
         }
       }
       return request

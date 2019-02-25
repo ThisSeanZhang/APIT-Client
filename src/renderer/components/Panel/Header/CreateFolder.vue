@@ -64,7 +64,15 @@ export default {
         belongProject: this.folderForm.belongProject
       }
     },
-    checkAllPass: function () {
+    ...mapState(['developerId'])
+  },
+  methods: {
+    currentChioceLocation (target) {
+      this.folderForm.belongProject = target.pid
+      this.folderForm.parentId = target.fid
+      console.log(target)
+    },
+    checkAllPass () {
       if (this.folderForm.parentId === null || this.folderForm.belongProject === null) {
         this.$message.warning('请选择所要放置的位置')
         return false
@@ -75,14 +83,6 @@ export default {
         return false
       }
       return true
-    },
-    ...mapState(['developerId'])
-  },
-  methods: {
-    currentChioceLocation (target) {
-      this.folderForm.belongProject = target.pid
-      this.folderForm.parentId = target.fid
-      console.log(target)
     },
     whenErrorMessage (error) {
       if (error.response) {
@@ -102,7 +102,7 @@ export default {
       }
     },
     createFolder () {
-      if (!this.checkAllPass) {
+      if (!this.checkAllPass()) {
         return
       }
       let request = {
