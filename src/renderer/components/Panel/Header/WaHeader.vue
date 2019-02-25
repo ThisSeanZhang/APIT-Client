@@ -34,6 +34,7 @@
     </el-col>
     <el-col :span="15">
       <create-folder v-on:flash:projectTree="$emit('flash:projectTree')" v-model="folderDialogVisible"></create-folder>
+      <create-project v-on:flash:projectTree="$emit('flash:projectTree')" v-model="projectDialogVisible"></create-project>
     </el-col>
     <el-col :span="4"><info-panel v-on:open:accountPanel="openLoginPanel" ></info-panel></el-col>
   </el-row>
@@ -41,11 +42,13 @@
 <script>
 import InfoPanel from './InfoPanel'
 import CreateFolder from './CreateFolder'
+import CreateProject from './CreateProject'
 export default {
   name: 'wa-header',
-  components: {InfoPanel, CreateFolder},
+  components: {InfoPanel, CreateFolder, CreateProject},
   data () {
     return {
+      projectDialogVisible: false,
       folderDialogVisible: false,
       createWhat: {API: 'API', FOLDER: 'FOLDER', PROJECT: 'PROJECT'}
     }
@@ -58,7 +61,7 @@ export default {
       var action = {
         'API': () => { this.$emit('create:api', 'ccc') },
         'FOLDER': () => { this.folderDialogVisible = true },
-        'PROJECT': () => { this.$message('暂未编写') }
+        'PROJECT': () => { this.projectDialogVisible = true }
       }
       return action[command]()
     },
