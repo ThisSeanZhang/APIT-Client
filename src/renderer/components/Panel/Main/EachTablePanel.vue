@@ -476,7 +476,7 @@ export default {
     line-height: 30px;
     font-size: 12px;
   }
-  .el-select .el-input {
+  .input-with-select .el-select .el-input {
     width: 120px;
   }
   .input-with-select .el-input-group__prepend {

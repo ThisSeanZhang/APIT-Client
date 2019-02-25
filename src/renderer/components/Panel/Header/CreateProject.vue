@@ -3,8 +3,8 @@
     title="创建项目"
     :visible.sync="dialogVisible"
     width="50%">
-    <el-form ref="form" label-position="top" :model="project" label-width="80px">
-      <el-form-item>
+    <el-form ref="form" label-position="top" :model="project" :rules="rules">
+      <el-form-item prop="projectName">
         <el-input placeholder="输入项目名称" v-model="project.projectName"></el-input>
       </el-form-item>
       <el-form-item>
@@ -25,27 +25,27 @@
       width="400"
       trigger="hover">
       <p>添加的小伙伴将有:<br>查看:项目、文件夹、API,编辑:文件夹、API的权限</p>
-      <div slot="reference" >添加些小伙伴?</div>
+      <div slot="reference" style="display: inline-block" >添加些小伙伴?</div>
     </el-popover>
     <el-select @click.stop class="teammate-choise"
-        multiple
-        filterable
-        remote
-        reserve-keyword
-        v-model="project.whoJoins"
-        placeholder="请输入小伙伴的昵称或者Email"
-        :remote-method="remoteMethod"
-        :loading="loading">
-        <el-option
-          v-for="item in options"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id">
-        </el-option>
-      </el-select>
+      multiple
+      filterable
+      remote
+      reserve-keyword
+      v-model="project.whoJoins"
+      placeholder="请输入小伙伴的昵称或者Email"
+      :remote-method="remoteMethod"
+      :loading="loading">
+      <el-option
+        v-for="item in options"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id">
+      </el-option>
+    </el-select>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="commitProject">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -65,7 +65,13 @@ export default {
         whoJoins: []
       },
       options: [],
-      loading: false
+      loading: false,
+      rules: {
+        projectName: [
+          { required: true, message: '请输入项目名称', trigger: 'blur' },
+          { min: 4, max: 16, message: '长度在 4 到 8 个字符,且仅能出现字符\'-_\'', pattern: /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,8}$/, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -77,7 +83,17 @@ export default {
         this.$emit('input', value)
       }
     },
-    ...mapState(['developerId'])
+    requestProject: function () {
+      const whoJoins = this.project.whoJoins.filter(who => who !== this.developerId).join(',')
+      // console.log(whoJoins, whoJoins.length)
+      return {
+        projectName: this.project.projectName,
+        projectOwner: this.developerId,
+        overt: this.project.overt,
+        whoJoins: whoJoins.length === 0 ? this.developerId.toString() : this.developerId + ',' + whoJoins
+      }
+    },
+    ...mapState(['developerId', 'developerName'])
   },
   methods: {
     remoteMethod (key) {
@@ -101,36 +117,62 @@ export default {
         this.options = []
       }
     },
-    whenErrorMessage (error, dowhat) {
+    whenErrorMessage (error) {
       if (error.response) {
-        if (error.response.status === 404) {
-          dowhat()
-        }
+        this.$message.warning(error.response.data.message + '(●ˇ∀ˇ●)')
       } else if (error.request) {
         this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
       } else {
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
       }
       this.loading = false
+    },
+    checkCommit () {
+      let patten = /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,16}$/
+      if (!patten.test(this.project.projectName)) {
+        this.$message.warning('文件名长度必须小于16且大于4位,且仅能含有特殊字符_-')
+        return false
+      }
+      return true
+    },
+    cleanProject () {
+      this.project = {
+        projectName: '',
+        projectOwner: this.developerId,
+        overt: false,
+        whoJoins: []
+      }
+    },
+    commitProject () {
+      if (!this.checkCommit()) {
+        return
+      }
+      let request = {
+        method: 'POST',
+        url: 'projects/',
+        data: this.requestProject
+      }
+      ajax(request).then(resp => {
+        this.$message.success('[]~(￣▽￣)~*添加成功')
+        this.dialogVisible = false
+        this.cleanProject()
+        this.$emit('flash:projectTree')
+      }).catch(error => {
+        this.whenErrorMessage(error)
+      })
     }
   },
   created () {
-    this.project.projectOwner = this.developerId
-    this.project.whoJoins = [this.developerId]
+    // this.options = [{id: this.developerId, name: this.developerName}]
+    // this.project.projectOwner = this.developerId
+    // this.project.whoJoins = [this.developerId]
   }
 }
 </script>
 
 <style type="text/css" lang="scss"  scoped>
-</style>
-<style type="text/css" lang="scss">
 .teammate-choise{
   width: 100%!important;
-  .el-input{
-    width: 100%!important;
-  }
-}
-.teammate-choise .el-input{
-  width: 100%!important;
+  background-color: aquamarine;
 }
 </style>

@@ -42,7 +42,7 @@ export default {
       rules: {
         folderName: [
           { required: true, message: '请输入文件名', trigger: 'blur' },
-          { min: 4, max: 16, message: '长度在 4 到 16 个字符', pattern: /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,16}$/, trigger: 'blur' }
+          { min: 4, max: 16, message: '长度在 4 到 16 个字符,且仅能含有特殊字符_-', pattern: /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,16}$/, trigger: 'blur' }
         ]
       }
     }
