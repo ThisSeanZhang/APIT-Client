@@ -39,6 +39,11 @@
           </span>
         </span>
       </el-tree>
+      <modify-project 
+      v-model="showModifyProjectDialog" 
+      v-bind:inProject="project"
+      v-on:flash:projectTree="$emit('update:list')"
+      ></modify-project>
     </div>
   </div>
 </template>
@@ -46,10 +51,11 @@
 import {ajax} from '../../../api/fetch'
 import DeletePopover from './DeletePopover'
 import FolderInfoPanel from './FolderInfoPanel'
+import ModifyProject from './ModifyProject'
 export default {
   name: 'wa-project',
   props: ['project', 'show_modify'],
-  components: {DeletePopover, FolderInfoPanel},
+  components: {DeletePopover, FolderInfoPanel, ModifyProject},
   data () {
     return {
       data: [],
@@ -60,7 +66,8 @@ export default {
       },
       requestUrl: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
       projectIsOpen: false,
-      filterText: ''
+      filterText: '',
+      showModifyProjectDialog: false
     }
   },
   methods: {
@@ -133,7 +140,7 @@ export default {
       }
     },
     editProject () {
-      // console.log('编辑')
+      this.showModifyProjectDialog = true
     },
     remove (node, data) {
       const list = data.nid.split('-')
