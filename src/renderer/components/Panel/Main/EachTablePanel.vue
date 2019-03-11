@@ -357,9 +357,10 @@ export default {
     },
     saveReqest: function () {
       const aid = this.testRequest.aid
+      const projectId = this.testRequest.belongProject ? this.testRequest.belongProject : this.defaultProject
       let request = {
         method: isNaN(aid) ? 'POST' : 'PUT',
-        url: 'projects/' + this.defaultFolder + '/apis/' + (isNaN(aid) ? '' : aid),
+        url: 'projects/' + projectId + '/apis/' + (isNaN(aid) ? '' : aid),
         data: {
           aid: isNaN(aid) ? null : aid,
           apiName: this.testRequest.apiName,
@@ -375,7 +376,7 @@ export default {
           }),
           apiOwner: this.testRequest.apiOwner ? this.testRequest.apiOwner : this.developerId,
           belongFolder: this.testRequest.belongFolder ? this.testRequest.belongFolder : this.defaultFolder,
-          belongProject: this.testRequest.belongProject ? this.testRequest.belongProject : this.defaultProject
+          belongProject: projectId
         }
       }
       return request
