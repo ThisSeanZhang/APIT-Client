@@ -26,8 +26,8 @@
 </template>
 <script>
 import WaProject from './WaProject'
-import {ajax} from '../../../api/fetch'
-
+import {ajax, just404} from '../../../api/fetch'
+import Project from '../../../entitys/Project'
 import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('UserInfo')
 
@@ -54,32 +54,19 @@ export default {
         this.$message.warning('还没有登入欸(●ˇ∀ˇ●)')
         return null
       }
-      let request = {method: 'GET', url: 'projects/owner/' + this.developerId}
+      let request = {method: 'GET', url: 'developers/' + this.developerId + '/projects'}
       this.obtionStatus = this.requestStatus.FETCHING
       ajax(request).then(resp => {
-        console.log(resp)
-        // TODO 登入成功后的相应操作
-        this.projects = resp.data.data
+        this.projects = resp.data.data.map(p => new Project(p))
         this.obtionStatus = this.requestStatus.SUCCESS
       }).catch(error => {
-        this.whenErrorMessage(error, () => {
+        just404(error).then(resp => {
           this.$message.warning('还没有项目欸(●ˇ∀ˇ●)')
           this.obtionStatus = this.requestStatus.NOTFOUND
+        }).catch(() => {
+          this.obtionStatus = this.requestStatus.REQUEST_ERROR
         })
       })
-    },
-    whenErrorMessage (error, dowhat) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          dowhat()
-        }
-      } else if (error.request) {
-        this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
-        this.obtionStatus = this.requestStatus.REQUEST_ERROR
-      } else {
-        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
-        this.obtionStatus = this.requestStatus.REQUEST_ERROR
-      }
     },
     pushAPIinfoToTables (param) {
       console.log('得到的api参数', param)
@@ -97,7 +84,6 @@ export default {
     ...mapState(['developerId'])
   },
   created () {
-    this.obtionStatus = this.requestStatus.FETCHING
     this.findAllProjectByDeveloperId()
   }
 }

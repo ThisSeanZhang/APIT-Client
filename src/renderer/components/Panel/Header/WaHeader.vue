@@ -33,19 +33,29 @@
       </el-dropdown>
     </el-col>
     <el-col :span="15">
-      <create-folder v-on:flash:projectTree="$emit('flash:projectTree')" v-model="folderDialogVisible"></create-folder>
-      <create-project v-on:flash:projectTree="$emit('flash:projectTree')" v-model="projectDialogVisible"></create-project>
+      <folder-info-panel
+      v-if="folderDialogVisible"
+      v-model="folderDialogVisible" 
+      v-bind:focus="null"
+      v-on:flash:folders="$emit('flash:projectTree')"
+      ></folder-info-panel>
+      <modify-project
+        v-if="projectDialogVisible"
+        v-model="projectDialogVisible"
+        v-bind:pid="null"
+        v-on:flash:projects="$emit('flash:projectTree')">
+      </modify-project>
     </el-col>
     <el-col :span="4"><info-panel v-on:open:accountPanel="openLoginPanel" ></info-panel></el-col>
   </el-row>
 </template>
 <script>
 import InfoPanel from './InfoPanel'
-import CreateFolder from './CreateFolder'
-import CreateProject from './CreateProject'
+import FolderInfoPanel from '../Aside/FolderInfoPanel'
+import ModifyProject from '../Aside/ModifyProject'
 export default {
   name: 'wa-header',
-  components: {InfoPanel, CreateFolder, CreateProject},
+  components: {InfoPanel, FolderInfoPanel, ModifyProject},
   data () {
     return {
       projectDialogVisible: false,

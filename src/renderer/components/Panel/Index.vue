@@ -37,8 +37,7 @@ import MainTable from './Main/MainTable'
 import AccountMain from '../Account/AccountMain'
 import WaFooter from '../Footer/WaFooter'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('UserInfo')
+import { mapState } from 'vuex'
 
 export default {
   name: 'index',
@@ -114,7 +113,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['signed'])
+    ...mapState('UserInfo', ['signed']),
+    ...mapState('EntitysContainer', ['projects'])
   },
   created () {
     // if (!this.signed) {

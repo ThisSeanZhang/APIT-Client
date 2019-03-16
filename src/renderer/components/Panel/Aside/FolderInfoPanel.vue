@@ -1,131 +1,198 @@
 <template>
-  <div style="display: inline-block" @click.stop>
-    <el-button type="text"  size="mini"  @click.stop="requestFolderInfo()" slot="reference">修改</el-button>
-    <el-dialog
-      title="文件夹信息"
-      :visible.sync="dialogVisible"
-      width="50%"
-      center>
-    <el-form ref="form" :model="folderForm" :rules="rules">
+<el-dialog
+  :title="focus === null ? '添加文件夹' : '修改文件夹'"
+  :visible.sync="dialogVisible"
+  width="640px"
+  >
+  <div v-loading="currentStatus === requestStatus.FETCHING">
+    <el-form ref="form" :model="folder" :rules="rules">
       <el-form-item prop="folderName">
-        <el-input v-model="folderForm.folderName" placeholder="文件夹名称"></el-input>
+        <el-input v-model="folder.folderName" placeholder="文件夹名称"></el-input>
       </el-form-item>
     </el-form>
-    从下列选择所要放置的文件夹或项目
-      <select-location v-if="dialogVisible" v-on:select:target="currentChioceLocation($event)"></select-location>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateFolder">确 定</el-button>
-      </span>
-    </el-dialog>
+    <div v-if="currentSelect.pName === null">从下列选择所要放置的文件夹或项目</div>
+    <div v-else>当前选择的存放位置为: <strong>{{currentSelect.pName}}</strong> 项目下<span v-if="currentSelect.fName !== null">的 <strong>{{currentSelect.fName ? currentSelect.fName : ''}}</strong> 文件夹</span></div>
+    <select-location v-if="dialogVisible" v-on:select:target="currentChioceLocation($event)"></select-location>
   </div>
+  <span slot="footer" class="dialog-footer">
+    <el-button
+      type="danger"
+      v-if="focus !== null"
+      :disabled="currentStatus === requestStatus.FETCHING"
+      @click="delDialogVisible = true"
+      icon="el-icon-delete" style="float: left;"></el-button>
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button
+      :disabled="currentStatus === requestStatus.FETCHING"
+      type="primary"
+      @click="commitFolder">确 定</el-button>
+  </span>
+  <el-dialog
+    center
+    width="210px"
+    title="确定删除？"
+    :visible.sync="delDialogVisible"
+    append-to-body>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="delDialogVisible = false">取 消</el-button>
+      <el-button
+        type="danger"
+        @click="delFolder">确 定</el-button>
+    </span>
+  </el-dialog>
+</el-dialog>
 </template>
 
 <script>
-import {ajax} from '../../../api/fetch'
+import {ajax, just404} from '../../../api/fetch'
+import Folder from '../../../entitys/Folder'
 import SelectLocation from '../../SelectLocation/Index'
 import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('UserInfo')
 export default {
-  name: 'delete-popover',
-  props: ['nid', 'pid'],
+  name: 'modify-folder',
   components: {SelectLocation},
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    focus: {
+      type: Object,
+      default: function () {
+        return null
+      }
+    }
+  },
   data () {
     return {
-      dialogVisible: false,
-      folderForm: {
-        folderName: '',
-        parentId: null,
-        folderOwnerId: null,
-        belongProject: null
+      folder: Folder.newEmptyFolder(),
+      requestStatus: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
+      currentStatus: null,
+      delDialogVisible: false,
+      currentSelect: {
+        pName: null,
+        fName: null
       },
       rules: {
         folderName: [
           { required: true, message: '请输入文件名', trigger: 'blur' },
-          { min: 4, max: 16, message: '长度在 4 到 16 个字符', pattern: /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,16}$/, trigger: 'blur' }
+          { min: 4, max: 16, message: Folder.nameValid().message, pattern: Folder.nameValid().pattern, trigger: 'blur' }
         ]
       }
     }
   },
+  computed: {
+    dialogVisible: {
+      get: function () {
+        return this.value
+      },
+      set: function (val) {
+        this.$emit('input', val)
+      }
+    },
+    folderRequest: function () {
+      if (this.focus === null) {
+        const createFolder = this.folder.parentId
+          ? this.folder.parentId + '/sub_folders/'
+          : ''
+        return {
+          request: {
+            method: 'POST',
+            url: 'projects/' + this.folder.belongProject + '/folders/' + createFolder,
+            data: this.folder
+          },
+          message: '[]~(￣▽￣)~*添加成功'
+        }
+      } else {
+        return {
+          request: {
+            method: 'PUT',
+            url: 'projects/' + this.focus.pid + '/folders/' + this.focus.fid,
+            data: this.folder
+          },
+          message: '[]~(￣▽￣)~*修改成功'
+        }
+      }
+    },
+    ...mapState(['developerId'])
+  },
   methods: {
     currentChioceLocation (target) {
-      this.folderForm.belongProject = target.pid
-      this.folderForm.parentId = target.fid
+      this.folder.belongProject = target.project.id
+      this.currentSelect.pName = target.project.name
+      this.folder.parentId = target.folder.id
+      this.currentSelect.fName = target.folder.name
       console.log(target)
     },
-    requestFolderInfo () {
-      let request = {
-        method: 'GET',
-        url: 'projects/' + this.pid + '/folders/' + this.nid.split('-')[1]
-      }
-      ajax(request).then(resp => {
-        // console.log(resp)
-        // TODO 登入成功后的相应操作
-        // console.log(resp.data.data)
-        this.responseToFolder(resp.data.data)
-        this.dialogVisible = true
-      }).catch(error => {
-        this.whenErrorMessage(error, () => {
-          this.$message.warning('没有东西欸(●ˇ∀ˇ●)')
-        })
-      })
-    },
-    whenErrorMessage (error) {
-      if (error.response) {
-        console.log(error.response)
-        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
-      } else if (error.request) {
-        // console.log(error.request)
-        this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
-      } else {
-        // console.log('Error', error.message)
-        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
-      }
-      // console.log(error.config)
-    },
-    responseToFolder (folder) {
-      this.folderForm.fid = folder.fid
-      this.folderForm.folderName = folder.folderName
-      this.folderForm.parentId = folder.parentId
-      this.folderForm.folderOwnerId = folder.folderOwnerId
-      this.folderForm.belongProject = folder.belongProject
-    },
     checkAllPass () {
-      if (this.folderForm.belongProject === null) {
-        this.$message.warning('请选择所要移动到的位置')
+      if (this.folder.belongProject === null) {
+        this.$message.warning('请选择所要放置的位置')
         return false
       }
-      let patten = /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,16}$/
-      if (!patten.test(this.folderForm.folderName)) {
-        this.$message.warning('文件名长度必须小于16且大于4位,且仅能含有特殊字符_-')
+      console.log('测试过了', this.folder)
+      if (!this.folder.isLegalName()) {
+        this.$message.warning(Folder.nameValid().message)
         return false
       }
       return true
     },
-    updateFolder () {
+    delFolder () {
+      this.sendRequest({
+        request: {
+          method: 'DELETE',
+          url: 'projects/' + this.focus.pid + '/folders/' + this.focus.fid
+        },
+        message: '[]~(￣▽￣)~*删除成功'
+      })
+    },
+    commitFolder () {
       if (!this.checkAllPass()) {
         return
       }
-      let request = {
-        method: 'PUT',
-        url: 'projects/' + this.folderForm.belongProject + '/folders/' + this.folderForm.fid,
-        data: this.folderForm}
-      ajax(request).then(resp => {
-        // TODO 登入成功后的相应操作
-        this.$message.success('[]~(￣▽￣)~*修改成功')
+      this.sendRequest(this.folderRequest)
+    },
+    sendRequest (item) {
+      ajax(item.request).then(resp => {
+        this.$message.success(item.message)
         this.dialogVisible = false
-        this.$emit('update:list')
+        this.$emit('flash:folders')
       }).catch(error => {
-        this.whenErrorMessage(error)
+        just404(error)
+          .then(resp => {
+            this.$message.warning('诶!对应文件夹不存在(●ˇ∀ˇ●)')
+          })
+      })
+    },
+    requestFolderInfo () {
+      this.currentStatus = this.requestStatus.FETCHING
+      let request = {
+        method: 'GET',
+        url: 'projects/' + this.focus.pid + '/folders/' + this.focus.fid
+      }
+      ajax(request).then(resp => {
+        this.folder = new Folder(resp.data.data)
+        this.currentStatus = this.requestStatus.SUCCESS
+      }).catch(error => {
+        just404(error)
+          .then(resp => {
+            this.$message.warning('请求的文件夹不存在诶(●ˇ∀ˇ●)')
+            this.currentStatus = this.requestStatus.NOTFOUND
+          })
+          .catch(() => {
+            this.currentStatus = this.requestStatus.REQUEST_ERROR
+          })
+        this.dialogVisible = false
       })
     }
   },
-  computed: {
-    ...mapState(['developerId'])
+  created () {
+    if (this.focus !== null) {
+      this.requestFolderInfo()
+    }
   }
 }
 </script>
-
 
 <style type="text/css" lang="scss"  scoped>
 </style>

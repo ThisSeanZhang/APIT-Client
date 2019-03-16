@@ -4,6 +4,7 @@ const state = {
   email: null,
   defaultProject: null,
   defaultFolder: null,
+  admin: false,
   signed: false
 }
 
@@ -15,6 +16,7 @@ const mutations = {
     state.defaultProject = info.defaultProject
     state.defaultFolder = info.defaultFolder
     state.signed = info.signed
+    state.admin = info.admin
   }
 }
 
@@ -33,7 +35,8 @@ const actions = {
       email: null,
       defaultProject: null,
       defaultFolder: null,
-      signed: false
+      signed: false,
+      admin: false
     })
   }
 }

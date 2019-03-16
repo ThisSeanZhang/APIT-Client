@@ -4,7 +4,7 @@
       <span class="test"><i :class="iconClass"></i></span>
       <span class="project_title">{{project.projectName}}</span>
       <span class="edit" v-if="show_modify" >
-        <i @click.stop="editProject" class="el-icon-edit-outline"></i></span>
+        <i @click.stop="editProject(project.pid)" class="el-icon-edit-outline"></i></span>
     </div>
     <div>
       <el-tree 
@@ -19,31 +19,27 @@
       @node-click="handleNodeClick">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <span>{{ node.label }}</span>
-          <span v-if="show_modify">
-            <!-- <el-button v-if="!node.isLeaf"
-              type="text"
-              size="mini"
-              @click="() => append(data)">
-              Info
-            </el-button> -->
-            <folder-info-panel v-on:update:list="$emit('update:list')" v-bind:nid="data.nid" v-bind:pid="data.belongProject" v-if="!node.isLeaf" ></folder-info-panel>
-            <!-- <el-popover placement="top" width="160" v-model="visible2">
-              <p>确定删除吗？</p>
-              <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
-                <el-button type="primary" size="mini" @click.stop="() => {remove(node, data); visible2 = false}">确定</el-button>
-              </div>
-              <el-button type="text" size="mini" @click.stop class="delete-text" slot="reference">删除</el-button>
-            </el-popover> -->
-            <delete-popover v-on:confirm:del="() => remove(node, data)" ></delete-popover>
+          <span class="folder-btn" v-if="signed">
+            <el-button
+              v-if="data.leaf === false"
+              @click.stop="modifyFolder({pid: data.belongProject, fid: data.contain})"
+              type="text" size="mini"
+              slot="reference">修改</el-button>
           </span>
         </span>
       </el-tree>
-      <modify-project 
-      v-model="showModifyProjectDialog" 
-      v-bind:inProject="project"
-      v-on:flash:projectTree="$emit('update:list')"
-      ></modify-project>
+      <folder-info-panel
+      v-if="modifyFolderVisible"
+      v-model="modifyFolderVisible" 
+      v-bind:focus="focusFolder"
+      v-on:flash:folders="$emit('update:list')"
+      ></folder-info-panel>
+      <modify-project
+        v-if="modifyProjectVisible"
+        v-model="modifyProjectVisible"
+        v-bind:pid="focusPid"
+        v-on:flash:projects="$emit('update:list')">
+      </modify-project>
     </div>
   </div>
 </template>
@@ -52,6 +48,9 @@ import {ajax} from '../../../api/fetch'
 import DeletePopover from './DeletePopover'
 import FolderInfoPanel from './FolderInfoPanel'
 import ModifyProject from './ModifyProject'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('UserInfo')
 export default {
   name: 'wa-project',
   props: ['project', 'show_modify'],
@@ -67,10 +66,20 @@ export default {
       requestUrl: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
       projectIsOpen: false,
       filterText: '',
-      showModifyProjectDialog: false
+      modifyFolderVisible: false,
+      focusFolder: {
+        pid: null,
+        fid: null
+      },
+      modifyProjectVisible: false,
+      focusPid: null
     }
   },
   methods: {
+    modifyFolder (focus) {
+      this.modifyFolderVisible = true
+      this.focusFolder = focus
+    },
     handleNodeClick (data) {
       if (data.leaf) {
         let request = {
@@ -98,7 +107,7 @@ export default {
       if (node.level === 0) {
         let request = {
           method: 'GET',
-          url: 'projects/' + this.project.pid + '/content/first-layer',
+          url: 'projects/' + this.project.pid + '/content/first_layer',
           data: {
             ownerId: this.project.projectOwner
           }}
@@ -139,8 +148,9 @@ export default {
         this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
       }
     },
-    editProject () {
-      this.showModifyProjectDialog = true
+    editProject (pid) {
+      this.modifyProjectVisible = true
+      this.focusPid = pid
     },
     remove (node, data) {
       const list = data.nid.split('-')
@@ -180,7 +190,8 @@ export default {
     },
     projectClass: function () {
       return this.projectIsOpen ? 'wa_project_focus wa_project' : 'wa_project_close wa_project'
-    }
+    },
+    ...mapState(['developerId', 'signed', 'admin'])
   },
   created () {
   }
@@ -229,12 +240,30 @@ export default {
 }
 .custom-tree-node {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+  .folder-btn{
+    display: none;
+    button {
+      margin: 0px;
+    }
   }
-  
+}
+.custom-tree-node:hover .folder-btn {
+  display: inline;
+}
+.delete-text{
+  color: #f56c6c;
+}
+.delete-text:hover{
+  color: #f56c6c85;
+}
+.folder-add-btn {
+  margin-top: 2px;
+  width: 100%;
+}
 </style>
 
