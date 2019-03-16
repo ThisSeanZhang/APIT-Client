@@ -3,8 +3,8 @@
     <el-radio-group @change="updateBody" v-model="radioType">
       <el-radio :label='bodyType.none'>none</el-radio>
       <el-radio :label="bodyType.formData">form-data</el-radio>
-      <el-radio :label="bodyType.urlencoded">urlencoded</el-radio>
-      <el-radio :label="bodyType.binary">binary</el-radio>
+      <!-- <el-radio :label="bodyType.urlencoded">urlencoded</el-radio> -->
+      <!-- <el-radio :label="bodyType.binary">binary</el-radio> -->
       <el-radio :label="bodyType.raw">
         <template v-if="radioType !== bodyType.raw">
           raw

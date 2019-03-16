@@ -118,14 +118,13 @@ export default {
       }
     },
     requestProject: function () {
-      const whoJoins = this.project.whoJoins.filter(who => who !== this.developerId).join(',')
       const projectOwner = this.pid === null ? this.developerId : this.project.projectOwner
       return new Project({
         pid: this.project.pid,
         projectName: this.project.projectName,
         projectOwner: projectOwner,
         overt: this.project.overt,
-        whoJoins: whoJoins.length === 0 ? projectOwner.toString() : projectOwner + ',' + whoJoins
+        whoJoins: this.project.whoJoins.join(',')
       })
     },
     ...mapState(['developerId'])

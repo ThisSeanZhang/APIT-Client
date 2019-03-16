@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-import {ajax} from '../../../api/fetch'
+import {ajax, just404} from '../../../api/fetch'
 import DeletePopover from './DeletePopover'
 import FolderInfoPanel from './FolderInfoPanel'
 import ModifyProject from './ModifyProject'
@@ -87,23 +87,18 @@ export default {
           url: 'projects/' + this.project.pid + '/apis/' + data.contain
         }
         ajax(request).then(resp => {
-          // TODO 获取成功后的相应操作
-          // console.log(resp.data)
           this.$emit('get:api', resp.data)
         }).catch(error => {
-          this.whenErrorMessage(error, () => {
-            this.$message.warning('没有东西欸(●ˇ∀ˇ●)')
+          just404(error).then(resp => {
+            this.$message.warning('找不到了欸,再试一次吧(●ˇ∀ˇ●)')
           })
         })
       }
-      // console.log(data)
     },
     openTheProject () {
       this.projectIsOpen = !this.projectIsOpen
     },
     loadFolders (node, resolve) {
-      // console.log(node)
-      // console.log(this.project)
       if (node.level === 0) {
         let request = {
           method: 'GET',
@@ -122,7 +117,6 @@ export default {
           }}
         this.getFolders(node, resolve, request)
       }
-      // console.log(this.data)
     },
     getFolders (node, container, request) {
       // let request = {method: 'GET', url: 'http://localhost:8080/floders'}
