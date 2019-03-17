@@ -1,21 +1,30 @@
 <template>
   <el-container>
-    <el-aside>
-      <wa-aside 
-      ref="aside"
-      v-on:pushToTable="pushToTable($event)"></wa-aside>
-    </el-aside>
-    <el-main>
-      <document-page v-bind:apiId="currentApiId" v-bind:projectId="currentProjectId"></document-page>
-    </el-main>
-    <!-- <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
-      <div class="loginPanel-body"></div>
-      <account-main v-on:login:success="loginSuccess" ></account-main>
-    </el-dialog> -->
+    <el-header>
+      <wa-header
+        v-bind:inputTitle="'文档查看'"
+        v-bind:btn="'project'"
+        v-on:login:success="fetchProject">
+      </wa-header>
+    </el-header>
+    <el-container>
+      <el-aside>
+        <wa-aside 
+        ref="aside"
+        v-on:pushToTable="pushToTable($event)"></wa-aside>
+      </el-aside>
+      <el-main>
+        <document-page v-bind:apiId="currentApiId" v-bind:projectId="currentProjectId"></document-page>
+      </el-main>
+      <!-- <el-dialog :show-close='false' width='395px' custom-class="loginPanel" :visible.sync="dialogTableVisible">
+        <div class="loginPanel-body"></div>
+        <account-main v-on:login:success="loginSuccess" ></account-main>
+      </el-dialog> -->
+    </el-container>
   </el-container>
 </template>
 <script>
-import WaHeader from '../Panel/Header/WaHeader'
+import WaHeader from './DocumentHeader'
 import WaAside from '../Panel/Aside/WaAside1'
 import AccountMain from '../Account/AccountMain'
 import DocumentPage from './DocumentPage'
@@ -55,7 +64,11 @@ export default {
     height: 100%;
     width: auto !important;
   }
-  
+  .el-header{
+    padding: 0px;
+    color: #333;
+    border-bottom: 1px solid #dcdfe6;
+  }
   .el-main {
     padding-top: 0px!important;
   }

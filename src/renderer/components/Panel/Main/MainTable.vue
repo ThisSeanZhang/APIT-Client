@@ -6,7 +6,7 @@
       :name="item.aid">
       <span slot="label"><el-badge :is-dot="item.isDot" class="item"></el-badge>{{item.showApiName}}</span>
       <!-- {{index}}-{{item.content}} -->
-      <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)"></each-table-panel>
+      <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)" v-on:remove:api="removeTab($event)"></each-table-panel>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -43,6 +43,9 @@
               }
             }
           })
+        }
+        if (!isNaN(targetName)) {
+          this.$emit('flash:projectTree')
         }
         this.$emit('updateTable', tabs.filter(tab => tab.aid !== targetName))
       },

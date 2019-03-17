@@ -14,6 +14,8 @@
   </div>
 </template>
 <script>
+
+import { ajax } from '../../../api/fetch'
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapActions } = createNamespacedHelpers('UserInfo')
 export default {
@@ -21,8 +23,18 @@ export default {
   methods: {
     ...mapActions(['delUserInfo']),
     logOut () {
-      this.delUserInfo()
-      this.$router.push('/')
+      let request = {
+        method: 'DELETE',
+        url: '/session/' + this.developerId
+      }
+      ajax(request).then(resp => {
+        this.$message('退出成功')
+        this.delUserInfo()
+        this.$router.push('/')
+      }).catch(error => {
+        console.log(error)
+        this.$message('退出失败')
+      })
     }
   },
   computed: {

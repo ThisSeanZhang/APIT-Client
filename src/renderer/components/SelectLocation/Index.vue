@@ -37,7 +37,6 @@ export default {
   data () {
     return {
       show_modify: false,
-      activeName: null,
       projects: [],
       requestStatus: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},
       obtionStatus: null,
@@ -93,9 +92,6 @@ export default {
     ...mapState(['developerId'])
   },
   watch: {
-    activeName: function (n, o) {
-      this.$emit('select:target', {pid: n === '' ? null : n, fid: null})
-    },
     currentSelect: {
       handler: function (n, o) {
         this.$emit('select:target', n)

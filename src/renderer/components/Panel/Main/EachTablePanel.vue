@@ -11,7 +11,11 @@
       @blur="handleInputConfirm"
     ></el-input>
     <el-button v-else class="button-new-tag" size="small" @click="showInput">{{testRequest.apiName}}</el-button>
-    <el-button v-if="signed" class="button-save" type="primary" size="small" @click="commitCurrent" icon="el-icon-document">保存</el-button>
+    <div v-if="signed" style="float: right;">
+      <el-button v-if="!isNaN(testRequest.aid)" size="small" type="danger" icon="el-icon-delete" circle @click.stop="delVisible = true" plain></el-button>
+      <el-button v-if="!isNaN(testRequest.aid)" size="small" type="primary" icon="el-icon-rank" circle @click.stop="showSavePlace = true" plain></el-button>
+      <el-button  class="button-save" type="primary" size="small" @click="commitCurrent" icon="el-icon-document">保存</el-button>
+    </div>
     <div :class="descriptionDivClass" >
       <el-input
         type="textarea"
@@ -36,7 +40,6 @@
             <el-tab-pane label="请求参数"><request-param v-bind:parameters="testRequest.parameters"></request-param></el-tab-pane>
             <el-tab-pane label="请求头"><request-headers v-bind:headers="testRequest.headers"></request-headers></el-tab-pane>
             <el-tab-pane label="请求体"><request-body v-model="buildBody"></request-body></el-tab-pane>
-            <!-- <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
           </el-tabs>
           
         </el-form-item>
@@ -55,6 +58,18 @@
     <div>{{saveReqest}}</div> -->
     <select-save-place v-model="showSavePlace"
       v-on:update:api:belong="updateBelong($event)" ></select-save-place>
+    <el-dialog
+      center
+      width="210px"
+      title="确定删除？"
+      :visible.sync="delVisible">
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button
+          type="danger"
+          @click="delApi">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -64,7 +79,7 @@ import RequestHeaders from './RequestHeaders'
 import RequestBody from './RequestBody'
 import ResponseArea from './ResponseArea'
 import SelectSavePlace from './SelectSavePlace'
-import {ajax} from '../../../api/fetch'
+import {ajax, wantNothing} from '../../../api/fetch'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapState } = createNamespacedHelpers('UserInfo')
@@ -86,6 +101,7 @@ export default {
   data () {
     return {
       showSavePlace: false,
+      delVisible: false,
       isSending: false,
       changedName: false,
       panelLodong: false,
@@ -117,6 +133,19 @@ export default {
     }
   },
   methods: {
+    delApi () {
+      let request = {
+        method: 'DELETE',
+        url: 'projects/' + this.testRequest.belongProject + '/apis/' + this.testRequest.aid
+      }
+      ajax(request).then(resp => {
+        this.delVisible = false
+        this.$message('[]~(￣▽￣)~*删除成功')
+        this.$emit('remove:api', this.testRequest.aid.toString())
+      }).catch(error => {
+        wantNothing(error)
+      })
+    },
     objectComper (o1, o2) {
       const notCheck = ['aid', 'apiOwner', 'belongFolder', 'belongProject']
       for (const [key, value] of Object.entries(o1)) {
@@ -125,11 +154,6 @@ export default {
           return false
         }
       }
-      // Object.entries(o1).forEach(e => {
-      //   const [key, value] = e
-      //   console.log(key, value, o2[key] === value)
-      //   if (o2[key] !== value) return false
-      // })
       return true
     },
     showInput () {
@@ -149,6 +173,7 @@ export default {
       this.testRequest.belongFolder = target.fid
       this.testRequest.belongProject = target.pid
       console.log('设置了所属的文件加和项目:', this.testRequest)
+      this.commitCurrent()
     },
     checkCommitCurrent () {
       if (this.testRequest.belongProject === null) {
@@ -171,7 +196,7 @@ export default {
         this.panelLodong = false
       }).catch(error => {
         this.whenErrorMessage(error, () => {
-          this.showSavePlace = true
+          // this.showSavePlace = true
         })
       })
     },
@@ -357,10 +382,9 @@ export default {
     },
     saveReqest: function () {
       const aid = this.testRequest.aid
-      const projectId = this.testRequest.belongProject ? this.testRequest.belongProject : this.defaultProject
       let request = {
         method: isNaN(aid) ? 'POST' : 'PUT',
-        url: 'projects/' + projectId + '/apis/' + (isNaN(aid) ? '' : aid),
+        url: 'projects/' + this.testRequest.belongProject + '/apis/' + (isNaN(aid) ? '' : aid),
         data: {
           aid: isNaN(aid) ? null : aid,
           apiName: this.testRequest.apiName,
@@ -375,8 +399,8 @@ export default {
             rawData: this.testRequest.body.rawData
           }),
           apiOwner: this.testRequest.apiOwner ? this.testRequest.apiOwner : this.developerId,
-          belongFolder: this.testRequest.belongFolder ? this.testRequest.belongFolder : this.defaultFolder,
-          belongProject: projectId
+          belongFolder: this.testRequest.belongFolder,
+          belongProject: this.testRequest.belongProject
         }
       }
       return request

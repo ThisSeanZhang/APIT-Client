@@ -7,7 +7,7 @@
       <el-form-item prop="developerPass" >
         <el-input v-model="loginform.developerPass" @focus="clearLogError" placeholder="密码" type="password"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="false">
         记住我 &nbsp;&nbsp;&nbsp;<el-switch v-model="loginform.remeberme"></el-switch>
       </el-form-item>
       <el-form-item>

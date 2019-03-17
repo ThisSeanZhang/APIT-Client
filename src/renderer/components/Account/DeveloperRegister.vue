@@ -23,7 +23,7 @@
 
 <script>
 // import axios from 'axios'
-import {ajax} from '../../api/fetch'
+import {ajax, just404, wantNothing} from '../../api/fetch'
 import { Loading } from 'element-ui'
 export default {
   name: 'register',
@@ -105,7 +105,9 @@ export default {
             this.$message('当前用户名已存在(●ˇ∀ˇ●)')
             loding.close()
           }).catch(error => {
-            this.whenErrorMessage(error, this.sendRegisterInfo, true)
+            just404(error).then(resp => {
+              this.sendRegisterInfo()
+            })
             loding.close()
           })
         }
@@ -122,25 +124,8 @@ export default {
         this.$message({type: 'success', message: '注册成功[]~(￣▽￣)~*'})
         this.$emit('input', true)
       }).catch(error => {
-        this.whenErrorMessage(error, () => {})
+        wantNothing(error)
       })
-    },
-    whenErrorMessage (error, dowhat, isSlience = false) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          dowhat()
-        }
-        if (!isSlience) {
-          this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
-        }
-      } else if (error.request) {
-        // console.log(error.request)
-        this.$message.error('发送失败请检查网络连接╮（╯＿╰）╭')
-      } else {
-        // console.log('Error', error.message)
-        this.$message('欸，好像出错了_(:з)∠)_，再试一次吧')
-      }
-      // console.log(error.config)
     }
   }
 }

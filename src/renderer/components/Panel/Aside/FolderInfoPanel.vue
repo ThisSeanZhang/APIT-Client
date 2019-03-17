@@ -11,7 +11,7 @@
       </el-form-item>
     </el-form>
     <div v-if="currentSelect.pName === null">从下列选择所要放置的文件夹或项目</div>
-    <div v-else>当前选择的存放位置为: <strong>{{currentSelect.pName}}</strong> 项目下<span v-if="currentSelect.fName !== null">的 <strong>{{currentSelect.fName ? currentSelect.fName : ''}}</strong> 文件夹</span></div>
+    <div v-else>当前选择的存放位置为: <strong>{{currentSelect.pName}}</strong> 项目下<span v-if="currentSelect.fName !== null">的 <strong>{{currentSelect.fName}}</strong> 文件夹</span></div>
     <select-location v-if="dialogVisible" v-on:select:target="currentChioceLocation($event)"></select-location>
   </div>
   <span slot="footer" class="dialog-footer">

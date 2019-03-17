@@ -18,10 +18,7 @@
   </el-menu> -->
   <el-row type="flex" :gutter="20" justify="space-around" style="margin-top: 1%;">
     <el-col :span="4">
-      <!-- <el-button @click="handleCommand(createWhat.API)" type="primary">
-        <i class="el-icon-plus"></i>新建个API
-      </el-button> -->
-      <el-dropdown  @command="handleCommand" trigger="click">
+      <el-dropdown v-if="signed"  @command="handleCommand" trigger="click">
         <el-button type="primary">
           新建些什么呢<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
@@ -31,6 +28,9 @@
           <el-dropdown-item :command='createWhat.PROJECT' class="el-icon-date">&nbsp;项目 &nbsp;</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-button v-else @click="handleCommand(createWhat.API)" type="primary">
+        <i class="el-icon-plus"></i>新建个API
+      </el-button>
     </el-col>
     <el-col :span="15">
       <folder-info-panel
@@ -53,6 +53,9 @@
 import InfoPanel from './InfoPanel'
 import FolderInfoPanel from '../Aside/FolderInfoPanel'
 import ModifyProject from '../Aside/ModifyProject'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('UserInfo')
 export default {
   name: 'wa-header',
   components: {InfoPanel, FolderInfoPanel, ModifyProject},
@@ -64,9 +67,6 @@ export default {
     }
   },
   methods: {
-    // handleClick () {
-    //   this.$message('_(:з)∠)_, 还没有来得及写哦，试试旁边的按钮吧')
-    // },
     handleCommand (command) {
       var action = {
         'API': () => { this.$emit('create:api', 'ccc') },
@@ -78,6 +78,9 @@ export default {
     openLoginPanel (target) {
       this.$emit('open:accountPanel', target)
     }
+  },
+  computed: {
+    ...mapState(['signed'])
   }
 }
 </script>

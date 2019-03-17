@@ -72,7 +72,10 @@ export default class API {
         },
         formData: [],
         rawData: ''
-      }
+      },
+      apiOwner: null,
+      belongFolder: null,
+      belongProject: null
     })
   }
 }
