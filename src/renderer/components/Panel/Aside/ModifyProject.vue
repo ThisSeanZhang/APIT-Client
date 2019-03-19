@@ -2,7 +2,7 @@
   <el-dialog
     :title="exhibit.title"
     :visible.sync="dialogVisible"
-    width="50%">
+    width="640px">
     <div v-loading="currentStatus === requestStatus.FETCHING">
       <el-form ref="form" label-position="top" :model="project" :rules="rules">
         <el-form-item prop="projectName">

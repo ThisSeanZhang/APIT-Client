@@ -2,7 +2,7 @@
   <el-dialog
     title="选择存放位置"
     :visible.sync="dialogVisible"
-    width="650px"
+    width="640px"
     center>
     <div v-if="target.project.id === null">从下列选择所要放置的文件夹或项目</div>
     <div v-else>当前选择的存放位置为: 
