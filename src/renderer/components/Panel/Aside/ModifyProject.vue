@@ -1,20 +1,20 @@
 <template>
   <el-dialog
-    :title="pid === null ? '添加项目' : '修改项目'"
+    :title="exhibit.title"
     :visible.sync="dialogVisible"
     width="50%">
     <div v-loading="currentStatus === requestStatus.FETCHING">
       <el-form ref="form" label-position="top" :model="project" :rules="rules">
         <el-form-item prop="projectName">
-          <el-input placeholder="输入项目名称" v-model="project.projectName"></el-input>
+          <el-input placeholder="输入项目名称" :disabled="!exhibit.allowModify" v-model="project.projectName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-switch v-model="project.overt"></el-switch>
+          <el-switch v-model="project.overt" :disabled="!exhibit.allowModify"></el-switch>
           <el-popover
             placement="right"
             width="400"
             trigger="hover">
-            <p>公开的项目任何人都可以查看</p>
+            <p>公开的项目任何人都可以查看,但不能进行修改</p>
             <div slot="reference" style="display: inline-block;" >公开?</div>
           </el-popover>
         </el-form-item>
@@ -25,16 +25,18 @@
         title="添加的小伙伴能干啥"
         width="400"
         trigger="hover">
-        <p>添加的小伙伴将有:<br>查看:项目、文件夹、API,编辑:文件夹、API的权限</p>
-        <div slot="reference" style="display: inline-block" >添加些小伙伴?</div>
+        <p>除了<strong>编辑项目</strong>和<strong>删除项目</strong>，
+        对项目内的<strong>文件夹</strong>、<strong>接口</strong>都将有操作的权限</p>
+        <div slot="reference" style="display: inline-block" >{{exhibit.teammateMessage}}</div>
       </el-popover>
       <el-select @click.stop class="teammate-choise"
+        :disabled="!exhibit.allowModify"
         multiple
         filterable
         remote
         reserve-keyword
         v-model="project.whoJoins"
-        placeholder="请输入小伙伴的昵称或者Email"
+        placeholder="请输入小伙伴的昵称关键字或者Email信息"
         :remote-method="remoteMethod"
         :loading="loading">
         <el-option
@@ -47,13 +49,14 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
-          type="danger"
+          :type="exhibit.delPanel.type"
           v-if="pid !== null"
           :disabled="currentStatus === requestStatus.FETCHING"
           @click="delDialogVisible = true"
-          icon="el-icon-delete" style="float: left;"></el-button>
+          :icon="exhibit.delPanel.icon" style="float: left;"></el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button
+          v-if="exhibit.allowModify"
           type="primary"
           :disabled="currentStatus === requestStatus.FETCHING"
           @click="commitProject">确 定</el-button>
@@ -61,7 +64,7 @@
       <el-dialog
         center
         width="210px"
-        title="确定删除？"
+        :title="exhibit.delPanel.message"
         :visible.sync="delDialogVisible"
         append-to-body>
         <span slot="footer" class="dialog-footer">
@@ -127,6 +130,21 @@ export default {
         whoJoins: this.project.whoJoins.join(',')
       })
     },
+    exhibit: function () {
+      const append = this.pid === null
+      const isOwner = this.project.projectOwner === this.developerId
+      return {
+        title: append ? '添加项目' : '修改项目',
+        allowModify: append || isOwner,
+        teammateMessage: isOwner ? '添加些小伙伴?' : '以下的小伙伴加入了开发',
+        delPanel: {
+          type: isOwner ? 'danger' : 'warning',
+          icon: isOwner ? 'el-icon-delete' : 'el-icon-back',
+          message: isOwner ? '删除项目?' : '离开项目?'
+        },
+        delUrl: (isOwner ? '' : 'developers/' + this.developerId + '/') + 'projects/' + this.project.pid
+      }
+    },
     ...mapState(['developerId'])
   },
   methods: {
@@ -158,10 +176,12 @@ export default {
       return true
     },
     delProject () {
+      // const url = 'developers/' + this.developerId + '/'
       const item = {
         request: {
           method: 'DELETE',
-          url: 'projects/' + this.project.pid
+          // url: 'projects/' + this.project.pid
+          url: this.exhibit.delUrl
         },
         message: '[]~(￣▽￣)~*删除成功'
       }
@@ -262,6 +282,6 @@ export default {
 <style type="text/css" lang="scss"  scoped>
 .teammate-choise{
   width: 100%!important;
-  background-color: aquamarine;
+  // background-color: aquamarine;
 }
 </style>
