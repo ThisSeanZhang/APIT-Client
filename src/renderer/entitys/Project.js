@@ -1,5 +1,5 @@
 import { ajax } from '../api/fetch'
-const projectNamePatten = /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{4,8}$/
+const projectNamePatten = /^[\u4e00-\u9fa5a-zA-Z_\-0-9=]{1,8}$/
 export default class Project {
   constructor (project) {
     this.pid = project.pid
@@ -39,7 +39,7 @@ export default class Project {
   static nameValid () {
     return {
       patten: projectNamePatten,
-      message: '文件夹名称长度在 4 到 8 个字符,且仅能出现字符\'-_\''
+      message: '文件夹名称长度在 1 到 8 个字符,且仅能出现字符\'-_\''
     }
   }
   isLegalName () {

@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="space-between">
       <el-col :span="6">
-        <el-popover popper-class="setting-popover"
+        <el-popover popper-class="setting-popover" v-if="!signed"
           width="800px"
           trigger="click">
           <div class="title">设置所要连接的服务器哦(/▽＼),默认的服务器仅供测试o(*////▽////*)q<s style="opacity: 0.4;">比较懒哈哈哈哈哈哈哈哈</s></div>
@@ -81,7 +81,7 @@ export default {
       })
     },
     ...mapActions('Setting', ['setBaseUrl']),
-    ...mapActions('UserInfo', ['setUserInfo'])
+    ...mapActions('UserInfo', ['setUserInfo', 'signed'])
   },
   computed: {
     url: {

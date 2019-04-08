@@ -132,7 +132,7 @@ export default {
     },
     exhibit: function () {
       const append = this.pid === null
-      const isOwner = this.project.projectOwner === this.developerId
+      const isOwner = this.project.projectOwner === this.developerId || this.admin
       return {
         title: append ? '添加项目' : '修改项目',
         allowModify: append || isOwner,
@@ -145,7 +145,7 @@ export default {
         delUrl: (isOwner ? '' : 'developers/' + this.developerId + '/') + 'projects/' + this.project.pid
       }
     },
-    ...mapState(['developerId'])
+    ...mapState(['developerId', 'admin'])
   },
   methods: {
     remoteMethod (key) {
