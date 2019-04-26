@@ -31,33 +31,38 @@
       <p class="doc-api-text">
         {{testRequest.method}}
       </p>
-      <div class="doc-api-title">
+      <div class="doc-api-title" v-if="testRequest.headers.length > 1">
         请求头
       </div>
-      <div class="doc-api-table">
+      <div class="doc-api-table" v-if="testRequest.headers.length > 1">
         <el-table :data="testRequest.headers" stripe>
           <el-table-column align="center" prop="key" label="键"></el-table-column>
           <el-table-column align="center" prop="value" label="值"></el-table-column>
           <el-table-column align="center" prop="description" label="描述"></el-table-column>
         </el-table>
       </div>
-      <div class="doc-api-title">
+      <div class="doc-api-title" v-if="testRequest.parameters.length > 1">
         请求的查询参数
       </div>
-      <div class="doc-api-table">
+      <div class="doc-api-table" v-if="testRequest.parameters.length > 1">
         <el-table :data="testRequest.parameters" stripe>
           <el-table-column align="center" prop="key" label="键"></el-table-column>
           <el-table-column align="center" prop="value" label="值"></el-table-column>
           <el-table-column align="center" prop="description" label="描述"></el-table-column>
         </el-table>
       </div>
-      <div class="doc-api-title">
+      <div class="doc-api-title" v-if="testRequest.body.currentChoice.label.toLowerCase() !== 'none'">
         请求体 ({{testRequest.body.currentChoice.label.toLowerCase()}}){{testRequest.body.currentChoice.value}}
       </div>
       <div class="doc-api-table">
-        <p v-if="testRequest.body.currentChoice.label === 'raw'" class="doc-api-text">
-          {{testRequest.body.rawData}}
-        </p>
+        <div v-if="testRequest.body.currentChoice.label === 'raw'">
+          <div v-if=" testRequest.body.currentChoice.value === 'application/json'" class="doc-api-text">
+            <json-response v-model="testRequest.body.rawData"></json-response>
+          </div>
+          <p v-else class="doc-api-text">
+            {{testRequest.body.rawData}}
+          </p>
+        </div>
         <el-table v-else-if="testRequest.body.currentChoice.label === 'formData'" :data="testRequest.body.formData" stripe>
           <el-table-column align="center" prop="key" label="键"></el-table-column>
           <el-table-column align="center" prop="value" label="值"></el-table-column>
@@ -65,15 +70,37 @@
           <el-table-column align="center" prop="description" label="描述"></el-table-column>
         </el-table>
       </div>
+
+      <div class="doc-api-title" v-if="testRequest.responseExample !== null">
+        请求响应
+      </div>
+      <el-input
+        v-if="testRequest.responseExample !== null"
+        type="textarea"
+        :rows="15"
+        resize='none'
+        readonly
+        v-model="testRequest.responseExample">
+      </el-input>
+      <div class="doc-api-title" v-if="testRequest.exampleParams.length > 1">
+        响应参数说明
+      </div>
+      <div class="doc-api-table" v-if="testRequest.exampleParams.length > 1">
+        <el-table :data="testRequest.exampleParams" stripe>
+          <el-table-column align="center" prop="key" label="键"></el-table-column>
+          <el-table-column align="center" prop="type" label="类型"></el-table-column>
+          <el-table-column align="center" prop="description" label="描述"></el-table-column>
+        </el-table>
+      </div>
     </div>
-    <api-location-change
+    <!-- <api-location-change
       v-if="modifyVisible"
       v-model="modifyVisible"
       v-on:flash:folders="$router.go(0)"
       v-bind:focus="{ aid: currentAid, pid: currentPid} "
     >
-    </api-location-change>
-    <el-dialog
+    </api-location-change> -->
+    <!-- <el-dialog
       center
       width="210px"
       title="确定删除？"
@@ -84,17 +111,18 @@
           type="danger"
           @click="delApi">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
 import { ajax, just404 } from '../../api/fetch'
 import API from '../../entitys/API'
 import ApiLocationChange from './ApiLocationChange'
+import JsonResponse from '../ShareSegment/JsonResponse'
 export default {
   name: 'document-page',
   props: ['apiId', 'projectId'],
-  components: {ApiLocationChange},
+  components: {ApiLocationChange, JsonResponse},
   data () {
     return {
       requestStatus: {SUCCESS: 1, NOTFOUND: 2, REQUEST_ERROR: 3, FETCHING: 4},

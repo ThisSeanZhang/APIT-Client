@@ -81,7 +81,7 @@ export default {
       })
     },
     ...mapActions('Setting', ['setBaseUrl']),
-    ...mapActions('UserInfo', ['setUserInfo', 'signed'])
+    ...mapActions('UserInfo', ['setUserInfo'])
   },
   computed: {
     url: {

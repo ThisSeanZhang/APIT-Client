@@ -137,7 +137,9 @@ export default {
     console.log(this)
   },
   activated () {
-    this.flashProjectTree()
+    if (this.signed) {
+      this.flashProjectTree()
+    }
   }
 }
 </script>

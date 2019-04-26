@@ -4,7 +4,7 @@
       <wa-header
         v-bind:inputTitle="'文档查看'"
         v-bind:btn="'project'"
-        v-on:login:success="fetchProject">
+        >
       </wa-header>
     </el-header>
     <el-container>

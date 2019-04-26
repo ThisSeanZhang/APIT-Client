@@ -45,7 +45,11 @@
         </el-form-item>
       </el-form>
     </div>
-    <response-area v-bind:response="response"></response-area>
+    <response-area
+      v-bind:response="response" 
+      v-bind:aid="isNaN(testRequest.aid) ? null : parseInt(testRequest.aid)"
+      v-bind:belongProject="testRequest.belongProject"
+    ></response-area>
 
 
     <!-- <el-button-group slot="append" >

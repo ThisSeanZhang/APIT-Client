@@ -13,13 +13,20 @@ export default class API {
     this.apiOwner = api.apiOwner
     this.belongFolder = api.belongFolder
     this.belongProject = api.belongProject
+    this.responseExample = api.responseExample
+    this.exampleParams = api.exampleParams
     console.log(this)
   }
 
   static convertToList (value, doWhat) {
-    return value.split('<a_o>').map(e => {
-      return doWhat(e.split('<a_p>'))
-    })
+    if (value === null) return []
+    return value.split('<a_o>')
+      .map(e => doWhat(e.split('<a_p>')))
+  }
+  static convertToStr (list, doWhat) {
+    return list
+      ? list.map(e => doWhat(e).join('<a_p>')).join('<a_o>')
+      : ''
   }
 
   static convertToAPI (api) {
@@ -53,6 +60,8 @@ export default class API {
     testRequest.apiOwner = api.apiOwner
     testRequest.belongFolder = api.belongFolder
     testRequest.belongProject = api.belongProject
+    testRequest.responseExample = api.responseExample
+    testRequest.exampleParams = this.convertToList(api.exampleParams, info => { return {checked: (info[0] === 'true'), key: info[1], type: info[2], description: info[3]} })
     return testRequest
   }
 
@@ -75,7 +84,9 @@ export default class API {
       },
       apiOwner: null,
       belongFolder: null,
-      belongProject: null
+      belongProject: null,
+      responseExample: null,
+      exampleParams: null
     })
   }
 }
