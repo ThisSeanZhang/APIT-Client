@@ -134,7 +134,7 @@ export default {
     // }]
     this.tables = [this.currentTableTemplate()]
     this.currentTable = this.tables[this.tables.length - 1].aid
-    console.log(this)
+    // console.log(this)
   },
   activated () {
     if (this.signed) {

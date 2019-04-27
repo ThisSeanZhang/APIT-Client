@@ -6,7 +6,7 @@
       :name="item.aid">
       <span slot="label"><el-badge :is-dot="item.isDot" class="item"></el-badge>{{item.showApiName}}</span>
       <!-- {{index}}-{{item.content}} -->
-      <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)" v-on:remove:api="removeTab($event)"></each-table-panel>
+      <each-table-panel v-bind:item="item" v-on:commit:api="commitTable($event)" v-on:remove:api="removeTab($event, true)"></each-table-panel>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -32,7 +32,8 @@
       }
     },
     methods: {
-      removeTab (targetName) {
+      removeTab (targetName, needReflash = false) {
+        console.log(targetName, needReflash)
         let tabs = this.tables.concat()
         if (targetName === this.currentTable) {
           tabs.forEach((tab, index) => {
@@ -44,7 +45,7 @@
             }
           })
         }
-        if (!isNaN(targetName)) {
+        if (!isNaN(targetName) && needReflash) {
           this.$emit('flash:projectTree')
         }
         this.$emit('updateTable', tabs.filter(tab => tab.aid !== targetName))
