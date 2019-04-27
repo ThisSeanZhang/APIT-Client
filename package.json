@@ -1,8 +1,8 @@
 {
-  "name": "APIT",
+  "name": "apit-client",
   "version": "0.0.2",
   "author": "ThisSeanZhang",
-  "description": "An electron-vue project",
+  "description": "a client for apit-server",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {

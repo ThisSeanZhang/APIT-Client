@@ -1,6 +1,7 @@
 # APIT(还在开发中)
 
 > 调试API的过程中就可以同步的更新文档啦
+> 如需布署服务端请访问[APIT-Server](https://github.com/ThisSeanZhang/APIT-Server)
 
 ### 这里下载
 
