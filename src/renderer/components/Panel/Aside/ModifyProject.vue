@@ -106,7 +106,7 @@ export default {
       rules: {
         projectName: [
           { required: true, message: '请输入项目名称', trigger: 'blur' },
-          { min: 4, max: 16, message: Project.nameValid().message, pattern: Project.nameValid().pattern, trigger: 'blur' }
+          { min: 1, max: 16, message: Project.nameValid().message, pattern: Project.nameValid().pattern, trigger: 'blur' }
         ]
       }
     }

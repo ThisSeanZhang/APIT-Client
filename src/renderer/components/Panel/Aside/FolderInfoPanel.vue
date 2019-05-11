@@ -77,7 +77,7 @@ export default {
       rules: {
         folderName: [
           { required: true, message: '请输入文件名', trigger: 'blur' },
-          { min: 4, max: 16, message: Folder.nameValid().message, pattern: Folder.nameValid().pattern, trigger: 'blur' }
+          { min: 1, max: 16, message: Folder.nameValid().message, pattern: Folder.nameValid().pattern, trigger: 'blur' }
         ]
       }
     }
